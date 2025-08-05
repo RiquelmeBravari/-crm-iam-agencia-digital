@@ -15,6 +15,7 @@ import requests
 import json
 import os
 from pathlib import Path
+import hashlib
 
 # Configuración de página
 st.set_page_config(
@@ -23,6 +24,39 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# Configuración de autenticación
+ADMIN_PASSWORD = "integra2025"  # Cambiar por una contraseña más segura
+ADMIN_PASSWORD_HASH = hashlib.sha256(ADMIN_PASSWORD.encode()).hexdigest()
+
+def check_password():
+    """Verificar autenticación del usuario"""
+    if 'authenticated' not in st.session_state:
+        st.session_state.authenticated = False
+    
+    if not st.session_state.authenticated:
+        st.title("🔐 Acceso al CRM")
+        st.markdown("### Ingrese la clave de acceso")
+        
+        password = st.text_input("Contraseña:", type="password", key="login_password")
+        
+        col1, col2, col3 = st.columns([1, 1, 2])
+        with col2:
+            if st.button("🚀 Ingresar", type="primary", use_container_width=True):
+                password_hash = hashlib.sha256(password.encode()).hexdigest()
+                if password_hash == ADMIN_PASSWORD_HASH:
+                    st.session_state.authenticated = True
+                    st.success("✅ Acceso autorizado")
+                    st.rerun()
+                else:
+                    st.error("❌ Contraseña incorrecta")
+        
+        st.markdown("---")
+        st.info("💡 **Sistema de gestión CRM** - IAM Agencia Digital")
+        st.markdown("🔒 Acceso restringido para personal autorizado")
+        return False
+    
+    return True
 
 class CRMSimple:
     def __init__(self):
@@ -6918,6 +6952,10 @@ contacto@empresa.cl,Juan Pérez,Empresa ABC,Antofagasta""")
                 st.error("❌ Por favor ingresa una URL válida")
 
 def main():
+    # Verificar autenticación ANTES de cargar el CRM
+    if not check_password():
+        return
+        
     crm = CRMSimple()
     
     # Inicializar estado de navegación
@@ -6937,6 +6975,12 @@ def main():
     
     # Sidebar
     st.sidebar.title("🧭 Navegación")
+    
+    # Botón de cerrar sesión
+    if st.sidebar.button("🚪 Cerrar Sesión", type="secondary", use_container_width=True):
+        st.session_state.authenticated = False
+        st.rerun()
+    
     # NAVEGACIÓN CATEGORIZADA FUNCIONAL
     st.sidebar.markdown("---")
     st.sidebar.markdown("## 🎯 **NAVEGACIÓN**")
