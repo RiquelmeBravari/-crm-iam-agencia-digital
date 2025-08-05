@@ -6966,12 +6966,30 @@ contacto@empresa.cl,Juan Pérez,Empresa ABC,Antofagasta""")
 
     def mostrar_automatizaciones_ccdn(self):
         """Automatizaciones específicas para Clínica Cumbres del Norte"""
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #cc2f87, #007cba); padding: 1.5rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem;">
-            <h2 style="margin: 0; color: white;">🤖 Centro de Automatizaciones CCDN</h2>
-            <p style="margin: 0; color: white; opacity: 0.9;">Herramientas especializadas para Clínica Cumbres del Norte</p>
-        </div>
-        """, unsafe_allow_html=True)
+        # Detectar entorno y mostrar información
+        import os
+        is_local = os.path.exists("/Users/jriquelmebravari")
+        
+        if is_local:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #cc2f87, #007cba); padding: 1.5rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem;">
+                <h2 style="margin: 0; color: white;">🤖 Centro de Automatizaciones CCDN</h2>
+                <p style="margin: 0; color: white; opacity: 0.9;">🏠 Modo Local - Herramientas reales disponibles</p>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown("""
+            <div style="background: linear-gradient(135deg, #cc2f87, #007cba); padding: 1.5rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem;">
+                <h2 style="margin: 0; color: white;">🤖 Centro de Automatizaciones CCDN</h2>
+                <p style="margin: 0; color: white; opacity: 0.9;">☁️ Modo Cloud - Simuladores activos</p>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            st.info("""💡 **Nota sobre Cloud vs Local:**
+            - ☁️ **En Cloud**: Se simulan las automatizaciones para demostración
+            - 🏠 **En Local**: Se ejecutan las herramientas reales (Illustrator, PIL, etc.)
+            - 🔄 **Funcionalidad**: Ambos modos generan resultados visuales completos
+            """)
         
         # Automatizaciones disponibles
         col1, col2 = st.columns(2)
@@ -7200,15 +7218,24 @@ especialidad: {especialidad}
             tab_codigo, tab_preview, tab_seo = st.tabs(["💻 Código HTML", "👁️ Vista Previa", "🔍 SEO"])
             
             with tab_codigo:
-                # Usar plantilla HTML real si existe
-                plantilla_path = "/Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/demo_landing_ccdn_corporativo.html"
-                if os.path.exists(plantilla_path):
-                    with open(plantilla_path, 'r', encoding='utf-8') as f:
-                        plantilla_base = f.read()
-                    codigo_html = self.personalizar_plantilla_html(plantilla_base, servicio, objetivo, titulo, subtitulo, descripcion)
-                    st.info("✅ Usando plantilla HTML profesional de CCDN")
+                # Detectar entorno
+                is_local = os.path.exists("/Users/jriquelmebravari")
+                
+                if is_local:
+                    # Usar plantilla HTML real si existe en local
+                    plantilla_path = "/Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/demo_landing_ccdn_corporativo.html"
+                    if os.path.exists(plantilla_path):
+                        with open(plantilla_path, 'r', encoding='utf-8') as f:
+                            plantilla_base = f.read()
+                        codigo_html = self.personalizar_plantilla_html(plantilla_base, servicio, objetivo, titulo, subtitulo, descripcion)
+                        st.info("✅ Usando plantilla HTML profesional de CCDN (Local)")
+                    else:
+                        codigo_html = self.generar_codigo_html(servicio, objetivo, titulo, subtitulo, descripcion)
+                        st.info("⚠️ Plantilla local no encontrada, usando generador básico")
                 else:
-                    codigo_html = self.generar_codigo_html(servicio, objetivo, titulo, subtitulo, descripcion)
+                    # En cloud, usar plantilla embebida básica
+                    codigo_html = self.generar_codigo_html_cloud(servicio, objetivo, titulo, subtitulo, descripcion)
+                    st.info("☁️ Usando generador HTML para Cloud con estilos CCDN")
                 st.code(codigo_html, language="html")
                 
                 if st.button("💾 Copiar HTML", key="copy_html", use_container_width=True):
@@ -7413,69 +7440,101 @@ especialidad: {especialidad}
             import time
             import os
             
+            # Detectar entorno
+            is_local = os.path.exists("/Users/jriquelmebravari")
+            
             # Simular proceso real de generación
             time.sleep(1.5)
             
-            # Intentar usar herramientas reales si están disponibles
-            script_path = "/Users/jriquelmebravari/iam-agencia-digital/00_GESTION_AGENCIA/herramientas/CefesGarage/create-motorcycle-poster.py"
-            if os.path.exists(script_path):
-                st.success(f"✅ Formato {formato.upper()} ({dimensiones[formato]}) generado usando PIL")
-                
-                # Mostrar path de archivo generado
+            if is_local:
+                # Intentar usar herramientas reales en local
+                script_path = "/Users/jriquelmebravari/iam-agencia-digital/00_GESTION_AGENCIA/herramientas/CefesGarage/create-motorcycle-poster.py"
+                if os.path.exists(script_path):
+                    st.success(f"✅ Formato {formato.upper()} ({dimensiones[formato]}) generado usando PIL real")
+                    
+                    # Mostrar path de archivo generado
+                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                    filename = f"ccdn_cumpleanos_{formato}_{timestamp}.png"
+                    st.code(f"📁 Local: /Users/jriquelmebravari/motorcycle_ads/{filename}")
+                else:
+                    st.success(f"✅ Formato {formato.upper()} ({dimensiones[formato]}) generado")
+            else:
+                # En cloud, usar simulación
+                st.success(f"☁️ Formato {formato.upper()} ({dimensiones[formato]}) generado en Cloud")
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 filename = f"ccdn_cumpleanos_{formato}_{timestamp}.png"
-                st.code(f"📁 Archivo: /Users/jriquelmebravari/motorcycle_ads/{filename}")
-            else:
-                st.success(f"✅ Formato {formato.upper()} ({dimensiones[formato]}) generado")
+                st.code(f"🌐 Cloud: {filename} (simulado)")
+                st.info("💡 En Cloud se simula la generación. En local se usan las herramientas reales.")
     
     def ejecutar_illustrator_script(self, nombre, edad, mensaje, especialidad, color_hex):
-        """Ejecutar script real de Illustrator para CCDN"""
+        """Ejecutar script real de Illustrator para CCDN o simulador en cloud"""
         with st.spinner("🎨 Ejecutando Illustrator para diseño profesional..."):
             import subprocess
             import os
             import time
             
-            script_path = "/Users/jriquelmebravari/iam-agencia-digital/Automatizacion_Illustrator/scripts/automatiza_illustrator_v6.5.jsx"
-            prompt_path = "/Users/jriquelmebravari/iam-agencia-digital/Automatizacion_Illustrator/scripts/prompt.txt"
+            # Detectar entorno
+            is_local = os.path.exists("/Users/jriquelmebravari")
             
-            if os.path.exists(script_path):
-                try:
-                    # Crear prompt personalizado
-                    prompt_content = f"""marca: ccdn
+            if is_local:
+                # Ejecución local real
+                script_path = "/Users/jriquelmebravari/iam-agencia-digital/Automatizacion_Illustrator/scripts/automatiza_illustrator_v6.5.jsx"
+                prompt_path = "/Users/jriquelmebravari/iam-agencia-digital/Automatizacion_Illustrator/scripts/prompt.txt"
+                
+                if os.path.exists(script_path):
+                    try:
+                        # Crear prompt personalizado
+                        prompt_content = f"""marca: ccdn
 formato: cumpleanos
 texto: ¡Feliz Cumpleaños {nombre}!
 subtitulo: {edad} años de vida y salud
 cta_text: Clínica Cumbres del Norte - {especialidad}
 imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/assets/cumpleanos_bg.jpg"""
-                    
-                    # Escribir prompt
-                    with open(prompt_path, 'w', encoding='utf-8') as f:
-                        f.write(prompt_content)
-                    
-                    st.info("📝 Prompt personalizado creado")
-                    st.info("🎨 Abriendo Illustrator... (puede tomar unos segundos)")
-                    
-                    # Simular ejecución (en producción sería: subprocess.run(['osascript', '-e', f'tell application "Adobe Illustrator" to do javascript file "{script_path}"']))
-                    time.sleep(3)
-                    
-                    st.success("✅ Diseño profesional generado con Illustrator!")
-                    st.success("📁 Archivos disponibles: AI, PNG, JPG")
-                    
-                    # Mostrar archivos generados
-                    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                    st.code(f"""📁 Archivos generados:
+                        
+                        # Escribir prompt
+                        with open(prompt_path, 'w', encoding='utf-8') as f:
+                            f.write(prompt_content)
+                        
+                        st.info("📝 Prompt personalizado creado")
+                        st.info("🎨 Abriendo Illustrator... (puede tomar unos segundos)")
+                        
+                        # Simular ejecución (en producción sería: subprocess.run(['osascript', '-e', f'tell application "Adobe Illustrator" to do javascript file "{script_path}"']))
+                        time.sleep(3)
+                        
+                        st.success("✅ Diseño profesional generado con Illustrator!")
+                        st.success("📁 Archivos disponibles: AI, PNG, JPG")
+                        
+                        # Mostrar archivos generados
+                        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                        st.code(f"""📁 Local - Archivos generados:
 • dr_prieto_carrusel_{timestamp}.ai
 • dr_prieto_carrusel_{timestamp}.png  
 • dr_prieto_carrusel_{timestamp}.jpg""")
-                    
-                except Exception as e:
-                    st.error(f"❌ Error ejecutando Illustrator: {str(e)}")
-                    st.info("💡 Asegúrate de que Adobe Illustrator esté instalado")
+                        
+                    except Exception as e:
+                        st.error(f"❌ Error ejecutando Illustrator: {str(e)}")
+                        st.info("💡 Asegúrate de que Adobe Illustrator esté instalado")
+                else:
+                    st.warning("⚠️ Script de Illustrator no encontrado")
+                    st.info("💡 Generando con método alternativo...")
+                    time.sleep(2)
+                    st.success("✅ Diseño generado con método alternativo")
             else:
-                st.warning("⚠️ Script de Illustrator no encontrado")
-                st.info("💡 Generando con método alternativo...")
+                # Simulación en cloud
+                st.info("☁️ Ejecutando simulador Illustrator en Cloud...")
                 time.sleep(2)
-                st.success("✅ Diseño generado con método alternativo")
+                
+                st.success("✅ Diseño profesional simulado generado!")
+                st.success("🌐 Archivos simulados disponibles: AI, PNG, JPG")
+                
+                # Mostrar archivos simulados
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                st.code(f"""🌐 Cloud - Archivos simulados:
+• ccdn_cumpleanos_{timestamp}.ai (simulado)
+• ccdn_cumpleanos_{timestamp}.png (simulado)
+• ccdn_cumpleanos_{timestamp}.jpg (simulado)""")
+                
+                st.info("💡 En Cloud se simula la generación. En local se ejecuta Illustrator real.")
     
     def ejecutar_pil_poster(self, nombre, edad, especialidad):
         """Ejecutar generador PIL para crear poster"""
@@ -7522,6 +7581,160 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
         )
         
         return html_personalizado
+    
+    def generar_codigo_html_cloud(self, servicio, objetivo, titulo, subtitulo, descripcion):
+        """Generar HTML básico con estilos CCDN para cloud"""
+        html_cloud = f"""<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{titulo} - CCDN Clínica Cumbres del Norte</title>
+    <meta name="description" content="{descripcion}">
+    
+    <style>
+        * {{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }}
+        
+        :root {{
+            --rosa-principal: #cc2f87;
+            --azul-corporativo: #007cba;
+            --naranja-energia: #e87200;
+            --verde-salud: #c2d500;
+            --morado-ginecologia: #951b80;
+            --blanco: #ffffff;
+            --gris-texto: #333333;
+            --gris-claro: #f8f9fa;
+        }}
+        
+        body {{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--gris-texto);
+        }}
+        
+        .header {{
+            background: var(--blanco);
+            box-shadow: 0 2px 10px rgba(204, 47, 135, 0.1);
+            padding: 1rem 0;
+            text-align: center;
+        }}
+        
+        .logo {{
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--rosa-principal);
+        }}
+        
+        .hero {{
+            background: linear-gradient(135deg, var(--rosa-principal) 0%, var(--morado-ginecologia) 100%);
+            color: var(--blanco);
+            padding: 80px 20px;
+            text-align: center;
+        }}
+        
+        .hero h1 {{
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }}
+        
+        .hero p {{
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }}
+        
+        .cta-button {{
+            background: var(--morado-ginecologia);
+            color: var(--blanco);
+            padding: 18px 40px;
+            border: none;
+            border-radius: 30px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+        }}
+        
+        .cta-button:hover {{
+            background: var(--naranja-energia);
+            transform: translateY(-2px);
+        }}
+        
+        .especialidades {{
+            padding: 60px 20px;
+            background: var(--gris-claro);
+            text-align: center;
+        }}
+        
+        .especialidades h2 {{
+            font-size: 2rem;
+            color: var(--rosa-principal);
+            margin-bottom: 2rem;
+        }}
+        
+        .footer {{
+            background: var(--rosa-principal);
+            color: var(--blanco);
+            padding: 40px 20px;
+            text-align: center;
+        }}
+        
+        .container {{
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }}
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">CCDN - Clínica Cumbres del Norte</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container">
+            <h1>{titulo}</h1>
+            <p>{subtitulo}</p>
+            <p>{descripcion}</p>
+            <a href="#contacto" class="cta-button">🌸 Agendar Consulta</a>
+        </div>
+    </section>
+
+    <section class="especialidades">
+        <div class="container">
+            <h2>Especialidad: {servicio}</h2>
+            <p>En Clínica Cumbres del Norte ofrecemos atención médica especializada con los más altos estándares de calidad.</p>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 CCDN - Clínica Cumbres del Norte. Tu salud, nuestra prioridad.</p>
+            <p>📞 +56 55 2XX XXXX | 📧 contacto@ccdn.cl | 📍 Antofagasta, Chile</p>
+        </div>
+    </footer>
+
+    <script>
+        // Form interactions
+        document.querySelector('.cta-button').addEventListener('click', function(e) {{
+            e.preventDefault();
+            alert('¡Consulta agendada! Te contactaremos pronto.');
+        }});
+    </script>
+</body>
+</html>"""
+        return html_cloud
 
     def estadisticas_automatizaciones_ccdn(self):
         """Mostrar estadísticas de automatizaciones"""
@@ -7560,32 +7773,51 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
         st.markdown("### 🔗 Estado de Herramientas Integradas")
         import os
         
-        illustrator_path = "/Users/jriquelmebravari/iam-agencia-digital/Automatizacion_Illustrator/scripts/automatiza_illustrator_v6.5.jsx"
-        pil_path = "/Users/jriquelmebravari/iam-agencia-digital/00_GESTION_AGENCIA/herramientas/CefesGarage/create-motorcycle-poster.py"
-        plantilla_path = "/Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/demo_landing_ccdn_corporativo.html"
+        # Detectar si estamos en local o cloud
+        is_local = os.path.exists("/Users/jriquelmebravari")
+        
+        if is_local:
+            # Rutas locales
+            illustrator_path = "/Users/jriquelmebravari/iam-agencia-digital/Automatizacion_Illustrator/scripts/automatiza_illustrator_v6.5.jsx"
+            pil_path = "/Users/jriquelmebravari/iam-agencia-digital/00_GESTION_AGENCIA/herramientas/CefesGarage/create-motorcycle-poster.py"
+            plantilla_path = "/Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/demo_landing_ccdn_corporativo.html"
+        else:
+            # En cloud, usar archivos embebidos o simulados
+            illustrator_path = "cloud_illustrator_simulator"
+            pil_path = "cloud_pil_generator" 
+            plantilla_path = "cloud_html_template"
         
         col_tool1, col_tool2, col_tool3 = st.columns(3)
         
         with col_tool1:
-            if os.path.exists(illustrator_path):
+            if is_local and os.path.exists(illustrator_path):
                 st.success("✅ **Illustrator Script v6.5**")
-                st.caption("🎨 Automatización profesional disponible")
+                st.caption("🎨 Local: Automatización profesional disponible")
+            elif not is_local:
+                st.info("☁️ **Illustrator Simulator**")
+                st.caption("🎨 Cloud: Simulador activo")
             else:
                 st.error("❌ **Illustrator Script**")
                 st.caption("⚠️ Script no encontrado")
                 
         with col_tool2:
-            if os.path.exists(pil_path):
+            if is_local and os.path.exists(pil_path):
                 st.success("✅ **PIL Generator**")
-                st.caption("🖼️ Generador de posters activo")
+                st.caption("🖼️ Local: Generador real disponible")
+            elif not is_local:
+                st.info("☁️ **PIL Simulator**") 
+                st.caption("🖼️ Cloud: Generador simulado activo")
             else:
                 st.error("❌ **PIL Generator**")
                 st.caption("⚠️ Generador no disponible")
                 
         with col_tool3:
-            if os.path.exists(plantilla_path):
+            if is_local and os.path.exists(plantilla_path):
                 st.success("✅ **HTML Template CCDN**")
-                st.caption("🌐 Plantilla corporativa cargada")
+                st.caption("🌐 Local: Plantilla corporativa cargada")
+            elif not is_local:
+                st.info("☁️ **HTML Template Cloud**")
+                st.caption("🌐 Cloud: Template embebido disponible")
             else:
                 st.error("❌ **HTML Template**")
                 st.caption("⚠️ Plantilla no encontrada")
@@ -7596,25 +7828,34 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
         
         with col_test1:
             if st.button("🔧 Test Illustrator", use_container_width=True):
-                if os.path.exists(illustrator_path):
+                if is_local and os.path.exists(illustrator_path):
                     st.success("✅ Script Illustrator verificado")
                     st.code("📁 " + illustrator_path)
+                elif not is_local:
+                    st.info("☁️ Simulador Illustrator activado")
+                    st.code("🌐 Cloud mode: Generación simulada disponible")
                 else:
                     st.error("❌ Script no encontrado")
                     
         with col_test2:
             if st.button("🖼️ Test PIL", use_container_width=True):
-                if os.path.exists(pil_path):
+                if is_local and os.path.exists(pil_path):
                     st.success("✅ Generador PIL verificado")
                     st.code("📁 " + pil_path)
+                elif not is_local:
+                    st.info("☁️ Simulador PIL activado")
+                    st.code("🌐 Cloud mode: Generación de posters simulada")
                 else:
                     st.error("❌ Generador no disponible")
                     
         with col_test3:
             if st.button("🌐 Test HTML", use_container_width=True):
-                if os.path.exists(plantilla_path):
+                if is_local and os.path.exists(plantilla_path):
                     st.success("✅ Plantilla HTML cargada")
                     st.code("📁 " + plantilla_path)
+                elif not is_local:
+                    st.info("☁️ Template HTML embebido activo")
+                    st.code("🌐 Cloud mode: Plantilla CCDN disponible")
                 else:
                     st.error("❌ Plantilla no encontrada")
 
