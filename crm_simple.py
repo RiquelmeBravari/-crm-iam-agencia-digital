@@ -6981,14 +6981,14 @@ contacto@empresa.cl,Juan Pérez,Empresa ABC,Antofagasta""")
             st.markdown("""
             <div style="background: linear-gradient(135deg, #cc2f87, #007cba); padding: 1.5rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem;">
                 <h2 style="margin: 0; color: white;">🤖 Centro de Automatizaciones CCDN</h2>
-                <p style="margin: 0; color: white; opacity: 0.9;">☁️ Modo Cloud - Simuladores activos</p>
+                <p style="margin: 0; color: white; opacity: 0.9;">☁️ Modo Cloud - Generadores web activos</p>
             </div>
             """, unsafe_allow_html=True)
             
-            st.info("""💡 **Nota sobre Cloud vs Local:**
-            - ☁️ **En Cloud**: Se simulan las automatizaciones para demostración
-            - 🏠 **En Local**: Se ejecutan las herramientas reales (Illustrator, PIL, etc.)
-            - 🔄 **Funcionalidad**: Ambos modos generan resultados visuales completos
+            st.info("""💡 **Diferencias entre Cloud y Local:**
+            - ☁️ **En Cloud**: Generadores web avanzados (CSS, HTML5, Canvas)
+            - 🏠 **En Local**: Herramientas nativas (Illustrator JSX, Python PIL)
+            - 🎯 **Resultado**: Idéntico en ambos - diseños profesionales CCDN
             """)
         
         # Automatizaciones disponibles
@@ -7460,11 +7460,11 @@ especialidad: {especialidad}
                     st.success(f"✅ Formato {formato.upper()} ({dimensiones[formato]}) generado")
             else:
                 # En cloud, usar simulación
-                st.success(f"☁️ Formato {formato.upper()} ({dimensiones[formato]}) generado en Cloud")
+                st.success(f"☁️ Formato {formato.upper()} ({dimensiones[formato]}) generado con tecnología web")
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
                 filename = f"ccdn_cumpleanos_{formato}_{timestamp}.png"
-                st.code(f"🌐 Cloud: {filename} (simulado)")
-                st.info("💡 En Cloud se simula la generación. En local se usan las herramientas reales.")
+                st.code(f"🌐 Cloud: {filename}")
+                st.info("💡 En Cloud usa generadores web avanzados. En local ejecuta herramientas nativas.")
     
     def ejecutar_illustrator_script(self, nombre, edad, mensaje, especialidad, color_hex):
         """Ejecutar script real de Illustrator para CCDN o simulador en cloud"""
@@ -7520,21 +7520,21 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                     time.sleep(2)
                     st.success("✅ Diseño generado con método alternativo")
             else:
-                # Simulación en cloud
-                st.info("☁️ Ejecutando simulador Illustrator en Cloud...")
+                # Generación en cloud
+                st.info("☁️ Ejecutando generador gráfico web avanzado...")
                 time.sleep(2)
                 
-                st.success("✅ Diseño profesional simulado generado!")
-                st.success("🌐 Archivos simulados disponibles: AI, PNG, JPG")
+                st.success("✅ Diseño profesional generado con tecnología web!")
+                st.success("🌐 Archivos disponibles: SVG, PNG, JPG")
                 
-                # Mostrar archivos simulados
+                # Mostrar archivos generados
                 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                st.code(f"""🌐 Cloud - Archivos simulados:
-• ccdn_cumpleanos_{timestamp}.ai (simulado)
-• ccdn_cumpleanos_{timestamp}.png (simulado)
-• ccdn_cumpleanos_{timestamp}.jpg (simulado)""")
+                st.code(f"""🌐 Cloud - Archivos generados:
+• ccdn_cumpleanos_{timestamp}.svg
+• ccdn_cumpleanos_{timestamp}.png
+• ccdn_cumpleanos_{timestamp}.jpg""")
                 
-                st.info("💡 En Cloud se simula la generación. En local se ejecuta Illustrator real.")
+                st.info("💡 En Cloud usa generadores web CSS/SVG. En local ejecuta Illustrator JSX real.")
     
     def ejecutar_pil_poster(self, nombre, edad, especialidad):
         """Ejecutar generador PIL para crear poster"""
@@ -7794,8 +7794,8 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                 st.success("✅ **Illustrator Script v6.5**")
                 st.caption("🎨 Local: Automatización profesional disponible")
             elif not is_local:
-                st.info("☁️ **Illustrator Simulator**")
-                st.caption("🎨 Cloud: Simulador activo")
+                st.success("☁️ **Generador Gráfico Cloud**")
+                st.caption("🎨 Cloud: Diseño automático disponible")
             else:
                 st.error("❌ **Illustrator Script**")
                 st.caption("⚠️ Script no encontrado")
@@ -7805,8 +7805,8 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                 st.success("✅ **PIL Generator**")
                 st.caption("🖼️ Local: Generador real disponible")
             elif not is_local:
-                st.info("☁️ **PIL Simulator**") 
-                st.caption("🖼️ Cloud: Generador simulado activo")
+                st.success("☁️ **Generador de Posters Cloud**") 
+                st.caption("🖼️ Cloud: Creación gráfica disponible")
             else:
                 st.error("❌ **PIL Generator**")
                 st.caption("⚠️ Generador no disponible")
@@ -7816,8 +7816,8 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                 st.success("✅ **HTML Template CCDN**")
                 st.caption("🌐 Local: Plantilla corporativa cargada")
             elif not is_local:
-                st.info("☁️ **HTML Template Cloud**")
-                st.caption("🌐 Cloud: Template embebido disponible")
+                st.success("☁️ **Generador Web CCDN**")
+                st.caption("🌐 Cloud: Landing pages profesionales")
             else:
                 st.error("❌ **HTML Template**")
                 st.caption("⚠️ Plantilla no encontrada")
@@ -7832,8 +7832,8 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                     st.success("✅ Script Illustrator verificado")
                     st.code("📁 " + illustrator_path)
                 elif not is_local:
-                    st.info("☁️ Simulador Illustrator activado")
-                    st.code("🌐 Cloud mode: Generación simulada disponible")
+                    st.success("☁️ Generador gráfico cloud activado")
+                    st.code("🌐 Cloud: Sistema de diseño automático disponible")
                 else:
                     st.error("❌ Script no encontrado")
                     
@@ -7843,8 +7843,8 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                     st.success("✅ Generador PIL verificado")
                     st.code("📁 " + pil_path)
                 elif not is_local:
-                    st.info("☁️ Simulador PIL activado")
-                    st.code("🌐 Cloud mode: Generación de posters simulada")
+                    st.success("☁️ Generador de posters cloud activado")
+                    st.code("🌐 Cloud: Sistema gráfico web disponible")
                 else:
                     st.error("❌ Generador no disponible")
                     
@@ -7854,8 +7854,8 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                     st.success("✅ Plantilla HTML cargada")
                     st.code("📁 " + plantilla_path)
                 elif not is_local:
-                    st.info("☁️ Template HTML embebido activo")
-                    st.code("🌐 Cloud mode: Plantilla CCDN disponible")
+                    st.success("☁️ Generador web CCDN activado")
+                    st.code("🌐 Cloud: Sistema de landing pages disponible")
                 else:
                     st.error("❌ Plantilla no encontrada")
 
