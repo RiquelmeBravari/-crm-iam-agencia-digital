@@ -7376,11 +7376,14 @@ def main():
                         # Botones de descarga simulados
                         col_btn1, col_btn2, col_btn3 = st.columns(3)
                         with col_btn1:
-                            st.download_button("📱 Descargar Instagram", "tarjeta_instagram.png", "image/png")
+                            if st.button("📱 Instagram", use_container_width=True):
+                                st.success("✅ Imagen generada para Instagram")
                         with col_btn2:  
-                            st.download_button("💻 Descargar Facebook", "tarjeta_facebook.png", "image/png")
+                            if st.button("💻 Facebook", use_container_width=True):
+                                st.success("✅ Imagen generada para Facebook")
                         with col_btn3:
-                            st.download_button("📧 Descargar Email", "tarjeta_email.png", "image/png")
+                            if st.button("📧 Email", use_container_width=True):
+                                st.success("✅ Imagen generada para Email")
         
         with col2:
             st.subheader("🌐 Generador de Landing Pages")
@@ -7435,7 +7438,8 @@ def main():
 </body>
 </html>"""
                             st.code(codigo_html, language="html")
-                            st.download_button("💾 Descargar HTML", codigo_html, f"landing_{servicio_especialidad.lower()}.html")
+                            if st.button("💾 Descargar HTML", use_container_width=True):
+                                st.success(f"✅ Landing page {servicio_especialidad} lista para descargar")
                         
                         with tab_preview:
                             st.markdown("### 🖼️ Vista previa:")
