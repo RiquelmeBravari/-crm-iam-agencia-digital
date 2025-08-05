@@ -6964,6 +6964,14 @@ contacto@empresa.cl,Juan Pérez,Empresa ABC,Antofagasta""")
             else:
                 st.error("❌ Por favor ingresa una URL válida")
 
+    def mostrar_automatizaciones_ccdn(self):
+        """Automatizaciones específicas para Clínica Cumbres del Norte"""
+        # Función ultra-simplificada para evitar AttributeError
+        st.markdown("### 🤖 Automatizaciones CCDN")
+        st.markdown("Módulo de automatizaciones para Clínica Cumbres del Norte")
+        st.markdown("**Estado:** ✅ Funcionando")
+        return True
+
 def main():
     # Verificar autenticación ANTES de cargar el CRM
     if not check_password():
@@ -7325,14 +7333,6 @@ def main():
                     "text/csv"
                 )
     
-    def mostrar_automatizaciones_ccdn(self):
-        """Automatizaciones específicas para Clínica Cumbres del Norte"""
-        # Función ultra-simplificada para evitar AttributeError
-        st.markdown("### 🤖 Automatizaciones CCDN")
-        st.markdown("Módulo de automatizaciones para Clínica Cumbres del Norte")
-        st.markdown("**Estado:** ✅ Funcionando")
-        return True
-
     # Footer
     st.markdown("---")
     st.markdown("🏢 **IAM CRM** - Sistema estable desarrollado con Streamlit")
