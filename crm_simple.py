@@ -1069,10 +1069,7 @@ Solo JSON válido."""
         df_filtrado = df_filtrado[df_filtrado['Volumen'] >= min_volumen]
         
         # Mostrar tabla con métricas
-        st.dataframe(
-            df_filtrado.style.background_gradient(subset=['Volumen', 'Dificultad']),
-            use_container_width=True
-        )
+        st.dataframe(df_filtrado, use_container_width=True)
         
         # Gráficos
         col1, col2 = st.columns(2)
@@ -1574,10 +1571,7 @@ Solo JSON válido."""
             df_filtrado = df_filtrado[df_filtrado['Volumen'] >= min_volumen]
             
             # Tabla de keywords
-            st.dataframe(
-                df_filtrado.style.background_gradient(subset=['Volumen', 'Dificultad']),
-                use_container_width=True
-            )
+            st.dataframe(df_filtrado, use_container_width=True)
             
             # Gráfico de keywords por posición
             col1, col2 = st.columns(2)
