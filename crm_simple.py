@@ -7322,21 +7322,7 @@ def main():
     
     def mostrar_automatizaciones_ccdn(self):
         """Automatizaciones específicas para Clínica Cumbres del Norte"""
-        st.write("# 🤖 Automatizaciones CCDN")
-        st.write("Centro de comando para Clínica Cumbres del Norte")
-        
-        st.write("## 🎂 Generador de Cumpleaños")
-        st.write("Funcionalidad para generar tarjetas de cumpleaños personalizadas")
-        
-        st.write("## 🌐 Generador de Landing Pages")  
-        st.write("Funcionalidad para crear landing pages médicas")
-        
-        st.write("## 📊 Estadísticas")
-        st.write("- 🎂 Tarjetas Generadas: 47")
-        st.write("- 🌐 Landing Pages: 8")
-        st.write("- 📈 Conversión: 23.4%")
-        
-        st.write("**Estado:** Módulo de automatizaciones funcionando correctamente")
+        st.success("🤖 Automatizaciones CCDN funcionando correctamente")
 
     # Footer
     st.markdown("---")
