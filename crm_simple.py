@@ -152,7 +152,7 @@ class CRMSimple:
                 'Ciudad': ['Antofagasta', 'Antofagasta', 'Antofagasta', 'Antofagasta'],
                 'Industria': ['Centro Médico Integral', 'Laboratorio Anatomía Patológica', 'Taller Mecánico', 'Centro Médico Especializado'],
                 'Estado': ['Activo', 'Activo', 'Activo', 'Contrato Fijo'],
-                'Valor_Mensual': [1000000, 600000, 300000, 1500000],
+                'Valor_Mensual': [1000000, 600000, 300000, 1200000],
                 'Servicios': [
                     'Marketing Integral + Gestión Administrativa Comercial',
                     'Marketing Integral + Redes Sociales + Web + Diseños',
