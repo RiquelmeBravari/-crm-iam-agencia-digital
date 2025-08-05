@@ -3671,7 +3671,7 @@ Solo JSON válido."""
             
             const summary = generateSummaryText();
             const encodedText = encodeURIComponent(summary);
-            const cleanNumber = whatsapp.replace(/[^\d]/g, '');
+            const cleanNumber = whatsapp.replace(/[^\\d]/g, '');
             const url = `https://wa.me/${cleanNumber}?text=${encodedText}`;
             window.open(url, '_blank');
         }
@@ -3685,7 +3685,7 @@ Solo JSON válido."""
             
             const summary = generateSummaryText();
             const subject = `Cotización IntegraMarketing - ${document.getElementById('cotizacion-id').textContent}`;
-            const body = summary.replace(/\*/g, '').replace(/━/g, '-');
+            const body = summary.replace(/\\*/g, '').replace(/━/g, '-');
             
             const url = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
             window.location.href = url;
