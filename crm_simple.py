@@ -434,17 +434,23 @@ class CRMSimple:
             </div>
             """, unsafe_allow_html=True)
             
-            # Mostrar imagen banner COMPLETA
+            # Mostrar imagen banner COMPLETA (compatible con Streamlit Cloud)
             try:
-                st.image("/Users/jriquelmebravari/iam_banner.png", use_container_width=True)
+                # Intentar cargar desde assets (Streamlit Cloud)
+                st.image("assets/iam_banner.png", use_container_width=True)
             except:
-                # Fallback si no encuentra la imagen
-                st.markdown("""
-                <div style="background: linear-gradient(135deg, #e91e63, #000000); padding: 2rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem; box-shadow: 0 8px 32px rgba(233, 30, 99, 0.3);">
-                    <h2 style="margin: 0; background: linear-gradient(45deg, #ffffff, #f8bbd9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2rem;">IAM IntegrA Marketing</h2>
-                    <p style="margin: 0; color: #f8bbd9; font-size: 1rem;">Banner Principal</p>
-                </div>
-                """, unsafe_allow_html=True)
+                try:
+                    # Fallback: intentar ruta local (localhost)
+                    st.image("/Users/jriquelmebravari/iam_banner.png", use_container_width=True)
+                except:
+                    # Fallback final: banner HTML si no encuentra imagen
+                    st.markdown("""
+                    <div style="background: linear-gradient(135deg, #e91e63, #000000); padding: 2rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem; box-shadow: 0 8px 32px rgba(233, 30, 99, 0.3);">
+                        <h2 style="margin: 0; background: linear-gradient(45deg, #ffffff, #f8bbd9); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-size: 2rem;">🚀 IAM IntegrA Marketing</h2>
+                        <p style="margin: 0; color: #f8bbd9; font-size: 1.2rem;">Sistema Integral de Gestión Digital</p>
+                        <p style="margin: 5px 0 0 0; color: #ffffff; opacity: 0.8; font-size: 0.9rem;">Plataforma SEO Todo-en-uno con IA</p>
+                    </div>
+                    """, unsafe_allow_html=True)
         else:
             # HEADER COMPACTO PARA MÓDULOS
             st.markdown("""
@@ -7901,11 +7907,11 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
             )
         
         with col_config2:
-            # Configuración de especialidad
+            # Configuración de departamento/área
             especialidad_cumple = st.selectbox(
-                "🏥 Especialidad médica",
+                "🏥 Departamento CCDN",
                 ["Ginecología", "Obstetricia", "Medicina General", "Ecografías", "Cirugía"],
-                help="Selecciona la especialidad para personalizar los colores"
+                help="Selecciona el departamento para personalizar los colores"
             )
             
             # Configuración de tema
