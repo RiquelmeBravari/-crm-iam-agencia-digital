@@ -52,13 +52,13 @@ def test_preparacion_datos():
     """Test de preparación de datos"""
     print("\n📊 Testing preparación de datos...")
     
-    # Datos de prueba simulando entrada del CRM
+    # Datos de prueba simulando entrada del CRM (con formato real de la planilla)
     cumpleanos_test = [
-        {'Nombre': 'Elizabeth Eliana Cortés', 'Fecha': '2025-08-07', 'Especialidad': 'Técnico Paramédico'},
-        {'Nombre': 'Myrna Ximena Vergara', 'Fecha': '2025-08-09', 'Especialidad': 'Nutricionista'},
-        {'Nombre': 'Patricia de Lourdes Rodríguez', 'Fecha': '2025-08-12', 'Especialidad': 'Supervisora de Cobranza'},
-        {'Nombre': 'María José García', 'Fecha': '2025-08-23', 'Especialidad': 'Administrativos'},
-        {'Nombre': 'Kirenia Tofalos', 'Fecha': '2025-08-24', 'Especialidad': 'Administrativos'}
+        {'Nombre': 'Elizabeth Eliana Cortés', 'Fecha': '2025-08-07', 'Cargo': 'Técnico Paramédico'},
+        {'Nombre': 'Myrna Ximena Vergara', 'Fecha': '2025-08-09', 'Cargo': 'Nutricionista'},
+        {'Nombre': 'Patricia de Lourdes Rodríguez', 'Fecha': '2025-08-12', 'Cargo': 'Supervisora de Cobranza'},
+        {'Nombre': 'María José García', 'Fecha': '2025-08-23', 'Cargo': 'Administrativos'},
+        {'Nombre': 'Kirenia Tofalos', 'Fecha': '2025-08-24', 'Cargo': 'Administrativos'}
     ]
     
     # Simular transformación a formato del script real
@@ -70,7 +70,7 @@ def test_preparacion_datos():
         dato_transformado = {
             "nombre": persona['Nombre'],
             "dia": dia.zfill(2),
-            "cargo": persona['Especialidad']
+            "cargo": persona['Cargo']
         }
         datos_transformados.append(dato_transformado)
     

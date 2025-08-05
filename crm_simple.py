@@ -7046,7 +7046,7 @@ contacto@empresa.cl,Juan Pérez,Empresa ABC,Antofagasta""")
                 )
             with col_especialidad:
                 especialidad = st.selectbox(
-                    "🏥 Especialidad médica",
+                    "💼 Cargo/Posición",
                     ["Ginecología", "Obstetricia", "Medicina General", "Ecografías", "Cirugía"]
                 )
             
@@ -7166,7 +7166,7 @@ especialidad: {especialidad}
             col_servicio, col_objetivo = st.columns(2)
             with col_servicio:
                 servicio_especialidad = st.selectbox(
-                    "🏥 Especialidad médica", 
+                    "💼 Cargo/Posición", 
                     ["Ginecología", "Obstetricia", "Medicina General", "Ecografías 4D", "Cirugía Ginecológica", "Control Prenatal"]
                 )
             with col_objetivo:
@@ -7714,7 +7714,7 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
 
     <section class="especialidades">
         <div class="container">
-            <h2>Especialidad: {servicio}</h2>
+            <h2>Cargo: {servicio}</h2>
             <p>En Clínica Cumbres del Norte ofrecemos atención médica especializada con los más altos estándares de calidad.</p>
         </div>
     </section>
@@ -7877,7 +7877,7 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
         - 🔵 **Azul Principal**: #007cba (Color principal corporativo)
         - 🟢 **Verde Limón**: #c2d500 (Salud y bienestar)
         - 🟠 **Naranja**: #e87200 (Energía y vitalidad)
-        - 🟣 **Morado Ginecología**: #951b80 (Especialidad ginecológica)
+        - 🟣 **Morado Ginecología**: #951b80 (Personal ginecológico)
         """)
         
         # Configuración de Google Sheets
@@ -7932,11 +7932,11 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                     st.warning("⚠️ No se pudo conectar con Google Sheets, usando datos de ejemplo")
                     # Datos simulados para agosto como respaldo
                     cumpleanos_agosto = [
-                        {"Nombre": "María González", "Fecha": "2025-08-03", "Edad": 34, "Especialidad": "Ginecología"},
-                        {"Nombre": "Ana Rodríguez", "Fecha": "2025-08-12", "Edad": 28, "Especialidad": "Obstetricia"},
-                        {"Nombre": "Carmen Silva", "Fecha": "2025-08-18", "Edad": 45, "Especialidad": "Ginecología"},
-                        {"Nombre": "Patricia López", "Fecha": "2025-08-25", "Edad": 31, "Especialidad": "Medicina General"},
-                        {"Nombre": "Rosa Martínez", "Fecha": "2025-08-30", "Edad": 39, "Especialidad": "Ginecología"}
+                        {"Nombre": "María González", "Fecha": "2025-08-03", "Edad": 34, "Cargo": "Ginecóloga"},
+                        {"Nombre": "Ana Rodríguez", "Fecha": "2025-08-12", "Edad": 28, "Cargo": "Obstetra"},
+                        {"Nombre": "Carmen Silva", "Fecha": "2025-08-18", "Edad": 45, "Cargo": "Ginecóloga"},
+                        {"Nombre": "Patricia López", "Fecha": "2025-08-25", "Edad": 31, "Cargo": "Médico General"},
+                        {"Nombre": "Rosa Martínez", "Fecha": "2025-08-30", "Edad": 39, "Cargo": "Ginecóloga"}
                     ]
                 
                 import pandas as pd
@@ -7983,14 +7983,14 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                 st.markdown("""
                 Tu planilla debe tener estas columnas:
                 
-                | Nombre | Fecha | Edad | Especialidad |
+                | Nombre | Fecha | Edad | Cargo |
                 |--------|-------|------|--------------|
-                | María González | 2025-08-03 | 34 | Ginecología |
-                | Ana Rodríguez | 2025-08-12 | 28 | Obstetricia |
+                | María González | 2025-08-03 | 34 | Ginecóloga |
+                | Ana Rodríguez | 2025-08-12 | 28 | Obstetra |
                 
                 📌 **Importante**: 
                 - La fecha debe estar en formato YYYY-MM-DD
-                - La especialidad debe coincidir con las opciones del selector
+                - El cargo debe estar especificado claramente
                 """)
             
             with col_help2:
@@ -8094,7 +8094,7 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
             for i, (col, persona) in enumerate(zip(cols, cumpleanos_data[:3])):
                 with col:
                     # Color específico por especialidad
-                    if persona["Especialidad"] == "Ginecología":
+                    if "ginec" in persona["Cargo"].lower():
                         color_tarjeta = "#951b80"  # Morado ginecología
                         emoji_esp = "🌸"
                     else:
@@ -8115,7 +8115,7 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                         <h3 style="margin: 0.5rem 0; color: white;">{persona["Nombre"]}</h3>
                         <p style="margin: 0; color: white; opacity: 0.9;">🎂 {persona["Edad"]} años</p>
                         <div style="margin-top: 1rem; background: rgba(255,255,255,0.1); padding: 0.5rem; border-radius: 5px;">
-                            <p style="margin: 0; color: white; font-size: 0.8rem;">{emoji_esp} CCDN - {persona["Especialidad"]}</p>
+                            <p style="margin: 0; color: white; font-size: 0.8rem;">{emoji_esp} CCDN - {persona["Cargo"]}</p>
                         </div>
                     </div>
                     """, unsafe_allow_html=True)
@@ -8177,7 +8177,7 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                                 "Nombre": str(row.get('Nombre', 'Sin nombre')),
                                 "Fecha": row['Fecha'].strftime('%Y-%m-%d') if pd.notna(row['Fecha']) else '2025-08-01',
                                 "Edad": int(row.get('Edad', 30)) if pd.notna(row.get('Edad')) else 30,
-                                "Especialidad": str(row.get('Especialidad', 'Medicina General'))
+                                "Cargo": str(row.get('Cargo', 'Administrativos'))
                             }
                             datos_cumpleanos.append(dato)
                         
@@ -8297,7 +8297,7 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
             if isinstance(persona, dict):
                 nombre = persona.get("Nombre", "")
                 fecha = persona.get("Fecha", "")
-                cargo = persona.get("Especialidad", persona.get("Cargo", "Administrativos"))
+                cargo = persona.get("Cargo", "Administrativos")
                 
                 # Extraer día de la fecha
                 dia = ""
