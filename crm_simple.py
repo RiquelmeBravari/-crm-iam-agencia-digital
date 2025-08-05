@@ -26,8 +26,9 @@ st.set_page_config(
 
 class CRMSimple:
     def __init__(self):
-        self.openrouter_key = "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"
-        self.sheet_id = "1WNDIcf817VDaXx98ITOwqgSu-6fh3dvxFoZgitYfpQY"
+        # API keys moved to Streamlit secrets for security
+        self.openrouter_key = st.secrets.get("api_keys", {}).get("openrouter_api_key", "")
+        self.sheet_id = st.secrets.get("google_sheets", {}).get("sheet_id", "")
         
         # Crear directorio de datos
         self.data_dir = Path("crm_data")
