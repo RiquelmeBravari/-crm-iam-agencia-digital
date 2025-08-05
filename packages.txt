@@ -1,3 +1,0 @@
-# 📦 PAQUETES DEL SISTEMA PARA STREAMLIT CLOUD
-# ============================================
-# Este archivo especifica paquetes del sistema necesarios
