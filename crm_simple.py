@@ -7916,26 +7916,28 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                 color_principal = "#007cba"  # Azul corporativo
                 emoji_especialidad = "🏥"
         
-        # Simulación de conexión con Google Sheets
+        # Conexión real con Google Sheets
         if sheet_url:
             with st.spinner("🔍 Conectando con Google Sheets..."):
                 import time
                 time.sleep(2)
                 
-                # Simulación de datos cargados
-                st.success("✅ Conexión exitosa con Google Sheets")
+                # Intentar conexión real con Google Sheets
+                datos_cargados = self.cargar_datos_google_sheets(sheet_url, mes_cumpleanos)
                 
-                # Mostrar datos simulados de la planilla
-                st.subheader(f"📋 Datos cargados - {mes_cumpleanos} 2025")
-                
-                # Datos simulados para agosto
-                cumpleanos_agosto = [
-                    {"Nombre": "María González", "Fecha": "2025-08-03", "Edad": 34, "Especialidad": "Ginecología"},
-                    {"Nombre": "Ana Rodríguez", "Fecha": "2025-08-12", "Edad": 28, "Especialidad": "Obstetricia"},
-                    {"Nombre": "Carmen Silva", "Fecha": "2025-08-18", "Edad": 45, "Especialidad": "Ginecología"},
-                    {"Nombre": "Patricia López", "Fecha": "2025-08-25", "Edad": 31, "Especialidad": "Medicina General"},
-                    {"Nombre": "Rosa Martínez", "Fecha": "2025-08-30", "Edad": 39, "Especialidad": "Ginecología"}
-                ]
+                if datos_cargados:
+                    st.success("✅ Conexión exitosa con Google Sheets")
+                    cumpleanos_agosto = datos_cargados
+                else:
+                    st.warning("⚠️ No se pudo conectar con Google Sheets, usando datos de ejemplo")
+                    # Datos simulados para agosto como respaldo
+                    cumpleanos_agosto = [
+                        {"Nombre": "María González", "Fecha": "2025-08-03", "Edad": 34, "Especialidad": "Ginecología"},
+                        {"Nombre": "Ana Rodríguez", "Fecha": "2025-08-12", "Edad": 28, "Especialidad": "Obstetricia"},
+                        {"Nombre": "Carmen Silva", "Fecha": "2025-08-18", "Edad": 45, "Especialidad": "Ginecología"},
+                        {"Nombre": "Patricia López", "Fecha": "2025-08-25", "Edad": 31, "Especialidad": "Medicina General"},
+                        {"Nombre": "Rosa Martínez", "Fecha": "2025-08-30", "Edad": 39, "Especialidad": "Ginecología"}
+                    ]
                 
                 import pandas as pd
                 df_cumples = pd.DataFrame(cumpleanos_agosto)
@@ -7973,20 +7975,42 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
         else:
             st.warning("⚠️ Por favor ingresa la URL de tu Google Sheet para comenzar")
             
-            # Ejemplo de formato esperado
-            st.subheader("📝 Formato Esperado de Google Sheets")
-            st.markdown("""
-            Tu planilla debe tener estas columnas:
+            # Instrucciones completas
+            col_help1, col_help2 = st.columns(2)
             
-            | Nombre | Fecha | Edad | Especialidad |
-            |--------|-------|------|--------------|
-            | María González | 2025-08-03 | 34 | Ginecología |
-            | Ana Rodríguez | 2025-08-12 | 28 | Obstetricia |
+            with col_help1:
+                st.subheader("📝 Formato Esperado de Google Sheets")
+                st.markdown("""
+                Tu planilla debe tener estas columnas:
+                
+                | Nombre | Fecha | Edad | Especialidad |
+                |--------|-------|------|--------------|
+                | María González | 2025-08-03 | 34 | Ginecología |
+                | Ana Rodríguez | 2025-08-12 | 28 | Obstetricia |
+                
+                📌 **Importante**: 
+                - La fecha debe estar en formato YYYY-MM-DD
+                - La especialidad debe coincidir con las opciones del selector
+                """)
             
-            📌 **Importante**: 
-            - La fecha debe estar en formato YYYY-MM-DD
-            - La especialidad debe coincidir con las opciones del selector
-            """)
+            with col_help2:
+                st.subheader("🔓 Cómo hacer pública tu Google Sheet")
+                st.markdown("""
+                **Pasos para compartir tu planilla:**
+                
+                1. 🔗 Abrir tu Google Sheet
+                2. 🔘 Clic en el botón "Compartir" (esquina superior derecha)
+                3. ⚙️ Cambiar a "Cualquier persona con el enlace"
+                4. 📖 Seleccionar permiso "Viewer" (solo lectura)
+                5. 📋 Copiar el enlace y pegarlo arriba
+                
+                ⚠️ **Nota de seguridad**: Solo datos de cumpleaños serán accesibles
+                """)
+                
+                # Botón de ejemplo
+                if st.button("📋 Ver ejemplo de URL", use_container_width=True):
+                    st.code("https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms/edit")
+                    st.info("💡 Esta es la estructura de URL que necesitas")
     
     def generar_poster_mensual(self, mes, cumpleanos_data, color_principal, especialidad):
         """Generar poster mensual con todos los cumpleaños"""
@@ -8095,6 +8119,67 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
             st.code("📁 Tarjetas individuales generadas:\n" + "\n".join(archivos_generados))
             
             st.info(f"💡 Total: {len(cumpleanos_data) * 2} archivos generados (formato post + stories para cada persona)")
+    
+    def cargar_datos_google_sheets(self, sheet_url, mes_seleccionado):
+        """Cargar datos reales desde Google Sheets"""
+        try:
+            # Extraer ID de la URL de Google Sheets
+            if "docs.google.com/spreadsheets/d/" in sheet_url:
+                sheet_id = sheet_url.split("/d/")[1].split("/")[0]
+                
+                # Convertir a formato CSV para lectura directa
+                csv_url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv"
+                
+                # Intentar leer los datos
+                import pandas as pd
+                import requests
+                
+                response = requests.get(csv_url, timeout=10)
+                if response.status_code == 200:
+                    # Procesar los datos
+                    from io import StringIO
+                    df = pd.read_csv(StringIO(response.text))
+                    
+                    # Filtrar por mes si la columna Fecha existe
+                    if 'Fecha' in df.columns:
+                        # Convertir fechas y filtrar por mes
+                        df['Fecha'] = pd.to_datetime(df['Fecha'], errors='coerce')
+                        
+                        # Mapear nombres de meses
+                        meses_map = {
+                            'Enero': 1, 'Febrero': 2, 'Marzo': 3, 'Abril': 4,
+                            'Mayo': 5, 'Junio': 6, 'Julio': 7, 'Agosto': 8,
+                            'Septiembre': 9, 'Octubre': 10, 'Noviembre': 11, 'Diciembre': 12
+                        }
+                        
+                        mes_numero = meses_map.get(mes_seleccionado, 8)  # Default agosto
+                        df_filtrado = df[df['Fecha'].dt.month == mes_numero]
+                        
+                        # Convertir a formato esperado
+                        datos_cumpleanos = []
+                        for _, row in df_filtrado.iterrows():
+                            dato = {
+                                "Nombre": str(row.get('Nombre', 'Sin nombre')),
+                                "Fecha": row['Fecha'].strftime('%Y-%m-%d') if pd.notna(row['Fecha']) else '2025-08-01',
+                                "Edad": int(row.get('Edad', 30)) if pd.notna(row.get('Edad')) else 30,
+                                "Especialidad": str(row.get('Especialidad', 'Medicina General'))
+                            }
+                            datos_cumpleanos.append(dato)
+                        
+                        return datos_cumpleanos if datos_cumpleanos else None
+                    else:
+                        st.error("❌ La planilla no tiene la columna 'Fecha' requerida")
+                        return None
+                else:
+                    st.error(f"❌ Error al acceder a Google Sheets: {response.status_code}")
+                    return None
+            else:
+                st.error("❌ URL de Google Sheets no válida")
+                return None
+                
+        except Exception as e:
+            st.error(f"❌ Error cargando datos de Google Sheets: {str(e)}")
+            return None
 
 def main():
     # Verificar autenticación ANTES de cargar el CRM
