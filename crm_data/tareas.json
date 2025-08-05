@@ -1,0 +1,62 @@
+[
+  {
+    "ID": "TASK002",
+    "Tarea": "Revisar propuesta Clínica Cumbres",
+    "Tipo_Servicio": "Consultoría de Marketing",
+    "Cliente": "Clínica Cumbres",
+    "Prioridad": "Media",
+    "Estado": "Pendiente",
+    "Fecha_Inicio": "2025-08-02",
+    "Deadline": "2025-08-07",
+    "Tiempo_Estimado": "1 día",
+    "Progreso": 30,
+    "Drive_Carpeta": "https://drive.google.com/drive/folders/1JKL012_ClinicaCumbres/propuestas",
+    "Doc_Referencia": "https://docs.google.com/document/d/1DEF_PropuestaCumbres",
+    "Sheet_Seguimiento": "https://docs.google.com/spreadsheets/d/1BBB_PropuestaTracking"
+  },
+  {
+    "ID": "TASK004",
+    "Tarea": "Diseño de branding completo",
+    "Tipo_Servicio": "Branding",
+    "Cliente": "DeliveryFast",
+    "Prioridad": "Media",
+    "Estado": "En Progreso",
+    "Fecha_Inicio": "2025-08-01",
+    "Deadline": "2025-08-20",
+    "Tiempo_Estimado": "3 semanas",
+    "Progreso": 45,
+    "Drive_Carpeta": "https://drive.google.com/drive/folders/1PQR678_DeliveryFast/branding",
+    "Doc_Referencia": "https://docs.google.com/document/d/1JKL_BrandingGuide",
+    "Sheet_Seguimiento": "https://docs.google.com/spreadsheets/d/1DDD_BrandingTimeline"
+  },
+  {
+    "ID": "TASK005",
+    "Tarea": "Campaña Google Ads",
+    "Tipo_Servicio": "Publicidad Digital",
+    "Cliente": "Histocell",
+    "Prioridad": "Baja",
+    "Estado": "Completada",
+    "Fecha_Inicio": "2025-07-28",
+    "Deadline": "2025-08-02",
+    "Tiempo_Estimado": "1 semana",
+    "Progreso": 100,
+    "Drive_Carpeta": "https://drive.google.com/drive/folders/1DEF456_Histocell/ads",
+    "Doc_Referencia": "https://docs.google.com/document/d/1MNO_AdsCampaign",
+    "Sheet_Seguimiento": "https://docs.google.com/spreadsheets/d/1EEE_AdsPerformance"
+  },
+  {
+    "ID": "TASK004",
+    "Tarea": "REnovacion landing motos usadas",
+    "Tipo_Servicio": "Diseño Web",
+    "Cliente": "Cefes Garage",
+    "Prioridad": "Alta",
+    "Estado": "Pendiente",
+    "Fecha_Inicio": "2025-08-03",
+    "Deadline": "2025-08-03",
+    "Tiempo_Estimado": "4 días",
+    "Progreso": 10,
+    "Drive_Carpeta": "https://drive.google.com/drive/folders/1GHI789_CefesGarage",
+    "Doc_Referencia": "https://docs.google.com/document/d/TASK004_REnovacion_landing_m",
+    "Sheet_Seguimiento": "https://docs.google.com/spreadsheets/d/TASK004_REnovacion_landing_m_tracking"
+  }
+]

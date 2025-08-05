@@ -1,0 +1,43 @@
+# 🚫 ARCHIVOS A IGNORAR EN GIT
+# ================================
+
+# Archivos de datos locales (opcional - para mantener datos privados)
+# crm_data/*.json
+# crm_data/backup_*.json
+
+# Archivos temporales
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+*.log
+
+# Archivos del sistema
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Archivos de configuración local
+.env
+.venv
+venv/
+env/
+
+# Archivos de IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Streamlit cache y secrets locales
+.streamlit/secrets.toml
+
+# Archivos de backup
+*.bak
+*.backup
