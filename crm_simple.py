@@ -7327,37 +7327,32 @@ def main():
         st.subheader("🤖 Automatizaciones CCDN")
         st.info("Centro de comando para todas las automatizaciones específicas de Clínica Cumbres del Norte")
         
-        # Automatizaciones disponibles
-        col1, col2 = st.columns(2)
+        # Generador de Cumpleaños
+        st.write("### 🎂 Generador de Cumpleaños")
+        nombre_paciente = st.text_input("👤 Nombre del paciente", placeholder="Ej: María González", key="ccdn_nombre")
+        color_tema = st.selectbox("🎨 Color temático", ["Rosa CCDN", "Azul Corporativo", "Verde Salud"], key="ccdn_color")
         
-        with col1:
-            st.write("### 🎂 Generador de Cumpleaños")
-            nombre_paciente = st.text_input("👤 Nombre del paciente", placeholder="Ej: María González")
-            color_tema = st.selectbox("🎨 Color temático", ["Rosa CCDN", "Azul Corporativo", "Verde Salud"])
-            
-            if st.button("🎨 Generar Tarjeta", type="primary"):
-                st.success(f"✅ Tarjeta generada para {nombre_paciente}")
-                st.balloons()
+        if st.button("🎨 Generar Tarjeta", type="primary", key="ccdn_tarjeta"):
+            st.success(f"✅ Tarjeta generada para {nombre_paciente}")
+            st.balloons()
         
-        with col2:
-            st.write("### 🌐 Generador de Landing Pages")
-            servicio_especialidad = st.selectbox("🏥 Especialidad médica", 
-                ["Ginecología", "Obstetricia", "Medicina General", "Ecografías", "Cirugía"])
-            
-            if st.button("🚀 Generar Landing", type="primary"):
-                st.success(f"✅ Landing page generada para {servicio_especialidad}")
-        
-        # Estadísticas simples
         st.write("---")
-        st.write("### 📊 Estadísticas")
-        col_stats1, col_stats2, col_stats3 = st.columns(3)
         
-        with col_stats1:
-            st.metric("🎂 Tarjetas", "47", "+12")
-        with col_stats2:
-            st.metric("🌐 Landing Pages", "8", "+2")  
-        with col_stats3:
-            st.metric("📈 Conversión", "23.4%", "+5.2%")
+        # Generador de Landing Pages  
+        st.write("### 🌐 Generador de Landing Pages")
+        servicio_especialidad = st.selectbox("🏥 Especialidad médica", 
+            ["Ginecología", "Obstetricia", "Medicina General", "Ecografías", "Cirugía"], key="ccdn_servicio")
+        
+        if st.button("🚀 Generar Landing", type="primary", key="ccdn_landing"):
+            st.success(f"✅ Landing page generada para {servicio_especialidad}")
+        
+        st.write("---")
+        
+        # Estadísticas
+        st.write("### 📊 Estadísticas")
+        st.metric("🎂 Tarjetas Generadas", "47", "+12 este mes")
+        st.metric("🌐 Landing Pages", "8", "+2 este mes")  
+        st.metric("📈 Conversión Promedio", "23.4%", "+5.2%")
 
     # Footer
     st.markdown("---")
