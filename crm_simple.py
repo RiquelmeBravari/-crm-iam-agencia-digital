@@ -7344,7 +7344,7 @@ def main():
                     height=100)
                 
                 color_tema = st.selectbox("🎨 Color temático", 
-                    ["Rosa CCDN (#cc2f87)", "Azul Corporativo (#007cba)", "Verde Salud (#c2d500)"])
+                    ["Rosa CCDN", "Azul Corporativo", "Verde Salud"])
                 
                 if st.form_submit_button("🎨 Generar Tarjeta de Cumpleaños", type="primary"):
                     with st.spinner("🎂 Generando tarjeta personalizada..."):
@@ -7352,15 +7352,23 @@ def main():
                         import time
                         time.sleep(2)
                         
+                        # Mapeo de colores
+                        colores_ccdn = {
+                            "Rosa CCDN": "#cc2f87",
+                            "Azul Corporativo": "#007cba", 
+                            "Verde Salud": "#c2d500"
+                        }
+                        color_hex = colores_ccdn.get(color_tema, "#cc2f87")
+                        
                         st.success(f"✅ Tarjeta generada para {nombre_paciente}")
                         st.balloons()
                         
                         # Mostrar preview (simulado)
                         st.markdown("### 🖼️ Preview de la tarjeta:")
                         st.markdown(f"""
-                        <div style="background: linear-gradient(135deg, {color_tema.split('(')[1].split(')')[0]}, #ffffff); 
+                        <div style="background: linear-gradient(135deg, {color_hex}, #ffffff); 
                              padding: 2rem; border-radius: 15px; color: white; text-align: center; 
-                             border: 3px solid {color_tema.split('(')[1].split(')')[0]}; margin: 1rem 0;">
+                             border: 3px solid {color_hex}; margin: 1rem 0;">
                             <h3>🎉 ¡Feliz Cumpleaños!</h3>
                             <h2 style="color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">{nombre_paciente}</h2>
                             <p style="font-style: italic; color: #f0f0f0;">{mensaje_personal}</p>
