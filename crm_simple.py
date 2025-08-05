@@ -1457,33 +1457,31 @@ Solo JSON válido."""
         
         st.markdown("---")
         
-        # Tabs del dashboard del cliente (agregar Automatizaciones para CCDN)
+        # Tabs del dashboard del cliente
         if cliente_nombre == "Clínica Cumbres del Norte":
-            tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs(["📊 Overview", "🎯 Keywords", "📈 Performance", "🚀 Proyectos", "🤖 Automatizaciones", "⚙️ Acciones"])
+            # Para CCDN: incluir pestaña de automatizaciones
+            tabs = st.tabs(["📊 Overview", "🎯 Keywords", "📈 Performance", "🚀 Proyectos", "🤖 Automatizaciones", "⚙️ Acciones"])
+            tab_names = ["overview", "keywords", "performance", "proyectos", "automatizaciones", "acciones"]
         else:
-            tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Overview", "🎯 Keywords", "📈 Performance", "🚀 Proyectos", "⚙️ Acciones"])
+            # Para otros clientes: sin automatizaciones
+            tabs = st.tabs(["📊 Overview", "🎯 Keywords", "📈 Performance", "🚀 Proyectos", "⚙️ Acciones"])
+            tab_names = ["overview", "keywords", "performance", "proyectos", "acciones"]
         
-        with tab1:
-            self.mostrar_overview_cliente(cliente_nombre, cliente_data, keywords_cliente)
-        
-        with tab2:
-            self.mostrar_keywords_cliente(cliente_nombre, keywords_cliente)
-        
-        with tab3:
-            self.mostrar_performance_cliente(cliente_nombre, keywords_cliente, proyectos_cliente)
-        
-        with tab4:
-            self.mostrar_proyectos_cliente(cliente_nombre, proyectos_cliente)
-        
-        # Solo mostrar pestaña de automatizaciones para CCDN
-        if cliente_nombre == "Clínica Cumbres del Norte":
-            with tab5:
-                self.mostrar_automatizaciones_ccdn()
-            with tab6:
-                self.mostrar_acciones_cliente(cliente_nombre)
-        else:
-            with tab5:
-                self.mostrar_acciones_cliente(cliente_nombre)
+        # Mostrar contenido según la pestaña
+        for i, (tab, name) in enumerate(zip(tabs, tab_names)):
+            with tab:
+                if name == "overview":
+                    self.mostrar_overview_cliente(cliente_nombre, cliente_data, keywords_cliente)
+                elif name == "keywords":
+                    self.mostrar_keywords_cliente(cliente_nombre, keywords_cliente)
+                elif name == "performance":
+                    self.mostrar_performance_cliente(cliente_nombre, keywords_cliente, proyectos_cliente)
+                elif name == "proyectos":
+                    self.mostrar_proyectos_cliente(cliente_nombre, proyectos_cliente)
+                elif name == "automatizaciones":
+                    self.mostrar_automatizaciones_ccdn()
+                elif name == "acciones":
+                    self.mostrar_acciones_cliente(cliente_nombre)
     
     def mostrar_overview_cliente(self, cliente_nombre, cliente_data, keywords_cliente):
         """Overview general del cliente"""
