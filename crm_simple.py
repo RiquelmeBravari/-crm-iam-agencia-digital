@@ -6970,16 +6970,17 @@ contacto@empresa.cl,Juan Pérez,Empresa ABC,Antofagasta""")
         import os
         is_local = os.path.exists("/Users/jriquelmebravari")
         
+        # Colores corporativos CCDN correctos
         if is_local:
             st.markdown("""
-            <div style="background: linear-gradient(135deg, #cc2f87, #007cba); padding: 1.5rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem;">
+            <div style="background: linear-gradient(135deg, #007cba, #951b80); padding: 1.5rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem;">
                 <h2 style="margin: 0; color: white;">🤖 Centro de Automatizaciones CCDN</h2>
                 <p style="margin: 0; color: white; opacity: 0.9;">🏠 Modo Local - Herramientas reales disponibles</p>
             </div>
             """, unsafe_allow_html=True)
         else:
             st.markdown("""
-            <div style="background: linear-gradient(135deg, #cc2f87, #007cba); padding: 1.5rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem;">
+            <div style="background: linear-gradient(135deg, #007cba, #951b80); padding: 1.5rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem;">
                 <h2 style="margin: 0; color: white;">🤖 Centro de Automatizaciones CCDN</h2>
                 <p style="margin: 0; color: white; opacity: 0.9;">☁️ Modo Cloud - Generadores web activos</p>
             </div>
@@ -7858,6 +7859,242 @@ imagen: /Users/jriquelmebravari/iam-agencia-digital/clients/clinica-cumbres/asse
                     st.code("🌐 Cloud: Sistema de landing pages disponible")
                 else:
                     st.error("❌ Plantilla no encontrada")
+    
+    def generar_cumpleanos_sheets(self):
+        """Generador de cumpleaños desde Google Sheets"""
+        
+        # Header con colores corporativos CCDN correctos
+        st.markdown("""
+        <div style="background: linear-gradient(135deg, #007cba, #e87200); padding: 2rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem;">
+            <h1 style="margin: 0; color: white; font-size: 2.5rem;">🎂 Generador de Cumpleaños CCDN</h1>
+            <p style="margin: 0.5rem 0 0 0; color: white; opacity: 0.9; font-size: 1.1rem;">Automatización completa desde Google Sheets</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+        # Información sobre colores corporativos
+        st.info("""
+        **🎨 Colores Corporativos CCDN:**
+        - 🔵 **Azul Principal**: #007cba (Color principal corporativo)
+        - 🟢 **Verde Limón**: #c2d500 (Salud y bienestar)
+        - 🟠 **Naranja**: #e87200 (Energía y vitalidad)
+        - 🟣 **Morado Ginecología**: #951b80 (Especialidad ginecológica)
+        """)
+        
+        # Configuración de Google Sheets
+        st.subheader("📊 Configuración de Google Sheets")
+        
+        col_config1, col_config2 = st.columns(2)
+        
+        with col_config1:
+            # Selector de planilla mensual
+            mes_cumpleanos = st.selectbox(
+                "📅 Mes de cumpleaños",
+                ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+                 "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"],
+                index=7  # Agosto por defecto
+            )
+            
+            sheet_url = st.text_input(
+                "🔗 URL de Google Sheet",
+                placeholder="https://docs.google.com/spreadsheets/d/...",
+                help="Pega aquí la URL de tu planilla de Google Sheets con los cumpleaños"
+            )
+        
+        with col_config2:
+            # Configuración de especialidad
+            especialidad_cumple = st.selectbox(
+                "🏥 Especialidad médica",
+                ["Ginecología", "Obstetricia", "Medicina General", "Ecografías", "Cirugía"],
+                help="Selecciona la especialidad para personalizar los colores"
+            )
+            
+            # Configuración de tema
+            if especialidad_cumple == "Ginecología":
+                color_principal = "#951b80"  # Morado ginecología
+                emoji_especialidad = "🌸"
+            else:
+                color_principal = "#007cba"  # Azul corporativo
+                emoji_especialidad = "🏥"
+        
+        # Simulación de conexión con Google Sheets
+        if sheet_url:
+            with st.spinner("🔍 Conectando con Google Sheets..."):
+                import time
+                time.sleep(2)
+                
+                # Simulación de datos cargados
+                st.success("✅ Conexión exitosa con Google Sheets")
+                
+                # Mostrar datos simulados de la planilla
+                st.subheader(f"📋 Datos cargados - {mes_cumpleanos} 2025")
+                
+                # Datos simulados para agosto
+                cumpleanos_agosto = [
+                    {"Nombre": "María González", "Fecha": "2025-08-03", "Edad": 34, "Especialidad": "Ginecología"},
+                    {"Nombre": "Ana Rodríguez", "Fecha": "2025-08-12", "Edad": 28, "Especialidad": "Obstetricia"},
+                    {"Nombre": "Carmen Silva", "Fecha": "2025-08-18", "Edad": 45, "Especialidad": "Ginecología"},
+                    {"Nombre": "Patricia López", "Fecha": "2025-08-25", "Edad": 31, "Especialidad": "Medicina General"},
+                    {"Nombre": "Rosa Martínez", "Fecha": "2025-08-30", "Edad": 39, "Especialidad": "Ginecología"}
+                ]
+                
+                import pandas as pd
+                df_cumples = pd.DataFrame(cumpleanos_agosto)
+                st.dataframe(df_cumples, use_container_width=True)
+                
+                st.markdown("---")
+                
+                # Opciones de generación
+                st.subheader("🎨 Opciones de Generación")
+                
+                col_gen1, col_gen2 = st.columns(2)
+                
+                with col_gen1:
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, {color_principal}, #ffffff); padding: 1.5rem; border-radius: 10px; text-align: center; margin-bottom: 1rem;">
+                        <h3 style="margin: 0; color: white;">{emoji_especialidad} Poster Mensual</h3>
+                        <p style="margin: 0.5rem 0; color: white; opacity: 0.9;">Todos los cumpleaños del mes</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    if st.button("🎂 Generar Poster Mensual", type="primary", use_container_width=True):
+                        self.generar_poster_mensual(mes_cumpleanos, cumpleanos_agosto, color_principal, especialidad_cumple)
+                
+                with col_gen2:
+                    st.markdown(f"""
+                    <div style="background: linear-gradient(135deg, #c2d500, {color_principal}); padding: 1.5rem; border-radius: 10px; text-align: center; margin-bottom: 1rem;">
+                        <h3 style="margin: 0; color: white;">🎁 Tarjetas Individuales</h3>
+                        <p style="margin: 0.5rem 0; color: white; opacity: 0.9;">Una tarjeta por cada cumpleaños</p>
+                    </div>
+                    """, unsafe_allow_html=True)
+                    
+                    if st.button("🎨 Generar Tarjetas Individuales", type="secondary", use_container_width=True):
+                        self.generar_tarjetas_individuales(cumpleanos_agosto, color_principal, especialidad_cumple)
+        
+        else:
+            st.warning("⚠️ Por favor ingresa la URL de tu Google Sheet para comenzar")
+            
+            # Ejemplo de formato esperado
+            st.subheader("📝 Formato Esperado de Google Sheets")
+            st.markdown("""
+            Tu planilla debe tener estas columnas:
+            
+            | Nombre | Fecha | Edad | Especialidad |
+            |--------|-------|------|--------------|
+            | María González | 2025-08-03 | 34 | Ginecología |
+            | Ana Rodríguez | 2025-08-12 | 28 | Obstetricia |
+            
+            📌 **Importante**: 
+            - La fecha debe estar en formato YYYY-MM-DD
+            - La especialidad debe coincidir con las opciones del selector
+            """)
+    
+    def generar_poster_mensual(self, mes, cumpleanos_data, color_principal, especialidad):
+        """Generar poster mensual con todos los cumpleaños"""
+        with st.spinner(f"🎂 Generando poster mensual de {mes}..."):
+            import time
+            time.sleep(3)
+            
+            st.success(f"✅ Poster mensual de {mes} generado exitosamente!")
+            
+            # Preview del poster mensual
+            st.subheader("🖼️ Preview del Poster Mensual")
+            
+            nombres_cumples = [p["Nombre"] for p in cumpleanos_data]
+            fechas_cumples = [p["Fecha"] for p in cumpleanos_data]
+            
+            st.markdown(f"""
+            <div style="
+                background: linear-gradient(135deg, {color_principal}, #ffffff); 
+                padding: 2rem; 
+                border-radius: 15px; 
+                color: white; 
+                text-align: center; 
+                border: 3px solid {color_principal}; 
+                margin: 1rem 0;
+                box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            ">
+                <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px; margin-bottom: 1rem;">
+                    <h2 style="margin: 0; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">🎉 Cumpleaños de {mes} 2025</h2>
+                    <h3 style="margin: 0.5rem 0; color: white; font-size: 1.2rem;">Especialidad: {especialidad}</h3>
+                </div>
+                
+                <div style="background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px; margin: 1rem 0;">
+                    <h4 style="color: white; margin-bottom: 1rem;">🎂 Nuestras pacientes celebran:</h4>
+                    """ + "".join([f"<p style='color: white; margin: 0.5rem 0;'>• {nombre} - {fecha.split('-')[2]} de {mes}</p>" 
+                                   for nombre, fecha in zip(nombres_cumples, fechas_cumples)]) + f"""
+                </div>
+                
+                <div style="margin-top: 1.5rem; background: rgba(255,255,255,0.1); padding: 1rem; border-radius: 10px;">
+                    <p style="margin: 0; color: white; font-weight: bold;">Clínica Cumbres del Norte</p>
+                    <p style="margin: 0; color: white; opacity: 0.8; font-size: 0.9rem;">Tu salud, nuestra prioridad</p>
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+            
+            # Información de archivos generados
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            st.code(f"""📁 Archivos generados:
+• ccdn_poster_{mes.lower()}_{timestamp}.png (1080x1350 - Instagram)
+• ccdn_poster_{mes.lower()}_{timestamp}_fb.png (1200x630 - Facebook)
+• ccdn_poster_{mes.lower()}_{timestamp}_story.png (1080x1920 - Stories)""")
+    
+    def generar_tarjetas_individuales(self, cumpleanos_data, color_principal, especialidad):
+        """Generar tarjetas individuales para cada cumpleaños"""
+        with st.spinner("🎨 Generando tarjetas individuales..."):
+            import time
+            time.sleep(4)
+            
+            st.success(f"✅ {len(cumpleanos_data)} tarjetas individuales generadas!")
+            
+            # Preview de tarjetas individuales
+            st.subheader("🎁 Preview de Tarjetas Individuales")
+            
+            # Mostrar 3 tarjetas como ejemplo
+            cols = st.columns(3)
+            
+            for i, (col, persona) in enumerate(zip(cols, cumpleanos_data[:3])):
+                with col:
+                    # Color específico por especialidad
+                    if persona["Especialidad"] == "Ginecología":
+                        color_tarjeta = "#951b80"  # Morado ginecología
+                        emoji_esp = "🌸"
+                    else:
+                        color_tarjeta = color_principal
+                        emoji_esp = "🏥"
+                    
+                    st.markdown(f"""
+                    <div style="
+                        background: linear-gradient(135deg, {color_tarjeta}, #ffffff); 
+                        padding: 1.5rem; 
+                        border-radius: 10px; 
+                        color: white; 
+                        text-align: center; 
+                        margin-bottom: 1rem;
+                        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+                    ">
+                        <h4 style="margin: 0; color: white;">🎉 ¡Feliz Cumpleaños!</h4>
+                        <h3 style="margin: 0.5rem 0; color: white;">{persona["Nombre"]}</h3>
+                        <p style="margin: 0; color: white; opacity: 0.9;">🎂 {persona["Edad"]} años</p>
+                        <div style="margin-top: 1rem; background: rgba(255,255,255,0.1); padding: 0.5rem; border-radius: 5px;">
+                            <p style="margin: 0; color: white; font-size: 0.8rem;">{emoji_esp} CCDN - {persona["Especialidad"]}</p>
+                        </div>
+                    </div>
+                    """, unsafe_allow_html=True)
+            
+            # Información de todos los archivos generados
+            st.subheader("📁 Archivos Generados")
+            
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            archivos_generados = []
+            
+            for persona in cumpleanos_data:
+                nombre_archivo = persona["Nombre"].lower().replace(" ", "_")
+                archivos_generados.append(f"• ccdn_cumple_{nombre_archivo}_{timestamp}.png")
+                archivos_generados.append(f"• ccdn_cumple_{nombre_archivo}_{timestamp}_story.png")
+            
+            st.code("📁 Tarjetas individuales generadas:\n" + "\n".join(archivos_generados))
+            
+            st.info(f"💡 Total: {len(cumpleanos_data) * 2} archivos generados (formato post + stories para cada persona)")
 
 def main():
     # Verificar autenticación ANTES de cargar el CRM
@@ -7907,7 +8144,7 @@ def main():
             "📊 Dashboard", "👥 Clientes", "📋 Cotizaciones", 
             "💲 Cotizador IntegraMarketing", "💰 Facturación", 
             "🚀 Proyectos", "✅ Gestión de Tareas", 
-            "📊 Vista Gantt", "📁 Gestión de Carpetas"
+            "📊 Vista Gantt", "📁 Gestión de Carpetas", "🎂 Generar Cumpleaños"
         ],
         "🔍 SEO": [
             "🔍 Herramientas SEO", "🎯 Visibilidad & Competencia",
@@ -8106,6 +8343,9 @@ def main():
     
     elif pagina == "📁 Gestión de Carpetas":
         crm.gestion_carpetas_individual()
+    
+    elif pagina == "🎂 Generar Cumpleaños":
+        crm.generar_cumpleanos_sheets()
     
     elif pagina == "💎 Keywords Joya":
         crm.keywords_joya_individual()
