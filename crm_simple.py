@@ -7315,175 +7315,40 @@ def main():
     
     def mostrar_automatizaciones_ccdn(self):
         """Automatizaciones específicas para Clínica Cumbres del Norte"""
-        st.markdown("""
-        <div style="background: linear-gradient(135deg, #cc2f87, #007cba); padding: 1.5rem; border-radius: 15px; color: white; text-align: center; margin-bottom: 2rem; box-shadow: 0 6px 24px rgba(204, 47, 135, 0.25);">
-            <h2 style="margin: 0; background: linear-gradient(45deg, #ffffff, #f8bbd9); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">🤖 Automatizaciones CCDN</h2>
-            <p style="margin: 0; color: #ffffff; font-size: 0.9rem;">Centro de comando para todas las automatizaciones específicas</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.subheader("🤖 Automatizaciones CCDN")
+        st.info("Centro de comando para todas las automatizaciones específicas de Clínica Cumbres del Norte")
         
         # Automatizaciones disponibles
         col1, col2 = st.columns(2)
         
         with col1:
-            st.subheader("🎂 Generador de Cumpleaños")
-            st.info("💡 Generación automática de tarjetas de cumpleaños personalizadas")
+            st.write("### 🎂 Generador de Cumpleaños")
+            nombre_paciente = st.text_input("👤 Nombre del paciente", placeholder="Ej: María González")
+            color_tema = st.selectbox("🎨 Color temático", ["Rosa CCDN", "Azul Corporativo", "Verde Salud"])
             
-            # Formulario para cumpleaños
-            with st.form("cumpleanos_form"):
-                nombre_paciente = st.text_input("👤 Nombre del paciente", placeholder="Ej: María González")
-                fecha_cumple = st.date_input("📅 Fecha de cumpleaños")
-                mensaje_personal = st.text_area("💌 Mensaje personalizado", 
-                    value="¡Feliz cumpleaños! En Clínica Cumbres del Norte te deseamos un día lleno de alegría y salud. 🎉",
-                    height=100)
-                
-                color_tema = st.selectbox("🎨 Color temático", 
-                    ["Rosa CCDN", "Azul Corporativo", "Verde Salud"])
-                
-                if st.form_submit_button("🎨 Generar Tarjeta de Cumpleaños", type="primary"):
-                    with st.spinner("🎂 Generando tarjeta personalizada..."):
-                        # Simular generación
-                        import time
-                        time.sleep(2)
-                        
-                        # Mapeo de colores
-                        colores_ccdn = {
-                            "Rosa CCDN": "#cc2f87",
-                            "Azul Corporativo": "#007cba", 
-                            "Verde Salud": "#c2d500"
-                        }
-                        color_hex = colores_ccdn.get(color_tema, "#cc2f87")
-                        
-                        st.success(f"✅ Tarjeta generada para {nombre_paciente}")
-                        st.balloons()
-                        
-                        # Mostrar preview (simulado)
-                        st.markdown("### 🖼️ Preview de la tarjeta:")
-                        st.markdown(f"""
-                        <div style="background: linear-gradient(135deg, {color_hex}, #ffffff); 
-                             padding: 2rem; border-radius: 15px; color: white; text-align: center; 
-                             border: 3px solid {color_hex}; margin: 1rem 0;">
-                            <h3>🎉 ¡Feliz Cumpleaños!</h3>
-                            <h2 style="color: #ffffff; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">{nombre_paciente}</h2>
-                            <p style="font-style: italic; color: #f0f0f0;">{mensaje_personal}</p>
-                            <div style="margin-top: 1rem;">
-                                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" 
-                                     alt="Logo CCDN" style="height: 60px; opacity: 0.8;">
-                            </div>
-                        </div>
-                        """, unsafe_allow_html=True)
-                        
-                        # Botones de descarga simulados
-                        col_btn1, col_btn2, col_btn3 = st.columns(3)
-                        with col_btn1:
-                            if st.button("📱 Instagram", use_container_width=True):
-                                st.success("✅ Imagen generada para Instagram")
-                        with col_btn2:  
-                            if st.button("💻 Facebook", use_container_width=True):
-                                st.success("✅ Imagen generada para Facebook")
-                        with col_btn3:
-                            if st.button("📧 Email", use_container_width=True):
-                                st.success("✅ Imagen generada para Email")
+            if st.button("🎨 Generar Tarjeta", type="primary"):
+                st.success(f"✅ Tarjeta generada para {nombre_paciente}")
+                st.balloons()
         
         with col2:
-            st.subheader("🌐 Generador de Landing Pages")
-            st.info("💡 Análisis y creación automática de landing pages optimizadas")
+            st.write("### 🌐 Generador de Landing Pages")
+            servicio_especialidad = st.selectbox("🏥 Especialidad médica", 
+                ["Ginecología", "Obstetricia", "Medicina General", "Ecografías", "Cirugía"])
             
-            # Formulario para landing pages
-            with st.form("landing_form"):
-                url_analizar = st.text_input("🔗 URL a analizar (opcional)", 
-                    placeholder="https://clinicacumbres.cl/ginecologia")
-                servicio_especialidad = st.selectbox("🏥 Especialidad médica", 
-                    ["Ginecología", "Obstetricia", "Medicina General", "Ecografías", "Cirugía"])
-                objetivo_landing = st.selectbox("🎯 Objetivo principal",
-                    ["Agendar Cita", "Solicitar Información", "Descarga de Recurso", "Contacto Directo"])
-                
-                if st.form_submit_button("🚀 Generar Landing Page", type="primary"):
-                    with st.spinner("🌐 Analizando y generando landing page..."):
-                        import time
-                        time.sleep(3)
-                        
-                        st.success(f"✅ Landing page generada para {servicio_especialidad}")
-                        
-                        # Mostrar resultados
-                        tab_codigo, tab_preview, tab_demo = st.tabs(["💻 Código", "👁️ Preview", "🔗 Demo"])
-                        
-                        with tab_codigo:
-                            st.markdown("### 📝 Código HTML generado:")
-                            codigo_html = f"""<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{servicio_especialidad} - Clínica Cumbres del Norte</title>
-    <style>
-        :root {{
-            --ccdn-rosa: #cc2f87;
-            --ccdn-azul: #007cba;
-            --ccdn-verde: #c2d500;
-        }}
-        body {{ font-family: 'Arial', sans-serif; margin: 0; padding: 0; }}
-        .hero {{ background: linear-gradient(135deg, var(--ccdn-rosa), var(--ccdn-azul)); 
-                 color: white; padding: 4rem 2rem; text-align: center; }}
-        .cta {{ background: var(--ccdn-verde); color: white; padding: 1rem 2rem; 
-                border: none; border-radius: 25px; font-size: 1.2rem; cursor: pointer; }}
-    </style>
-</head>
-<body>
-    <section class="hero">
-        <h1>Especialistas en {servicio_especialidad}</h1>
-        <p>Tu salud es nuestra prioridad en Clínica Cumbres del Norte</p>
-        <button class="cta">{objetivo_landing}</button>
-    </section>
-</body>
-</html>"""
-                            st.code(codigo_html, language="html")
-                            if st.button("💾 Descargar HTML", use_container_width=True):
-                                st.success(f"✅ Landing page {servicio_especialidad} lista para descargar")
-                        
-                        with tab_preview:
-                            st.markdown("### 🖼️ Vista previa:")
-                            st.markdown(f"""
-                            <div style="border: 2px solid #ddd; border-radius: 10px; overflow: hidden;">
-                                <div style="background: linear-gradient(135deg, #cc2f87, #007cba); 
-                                     color: white; padding: 3rem 2rem; text-align: center;">
-                                    <h1 style="margin: 0; font-size: 2.5rem;">Especialistas en {servicio_especialidad}</h1>
-                                    <p style="font-size: 1.2rem; margin: 1rem 0;">Tu salud es nuestra prioridad en Clínica Cumbres del Norte</p>
-                                    <button style="background: #c2d500; color: white; padding: 1rem 2rem; 
-                                           border: none; border-radius: 25px; font-size: 1.2rem; cursor: pointer;">
-                                        {objetivo_landing}
-                                    </button>
-                                </div>
-                            </div>
-                            """, unsafe_allow_html=True)
-                        
-                        with tab_demo:
-                            st.markdown("### 🔗 Enlaces de demo:")
-                            demo_urls = [
-                                "https://demo-ccdn-ginecologia.streamlit.app",
-                                "https://demo-ccdn-obstetricia.streamlit.app", 
-                                "https://demo-ccdn-medicina-general.streamlit.app"
-                            ]
-                            
-                            for i, url in enumerate(demo_urls[:1]):  # Solo mostrar uno por ahora
-                                st.markdown(f"🌐 **Demo {servicio_especialidad}:** [{url}]({url})")
-                                if st.button(f"🚀 Abrir Demo {servicio_especialidad}", key=f"demo_{i}"):
-                                    st.info(f"🔗 Abriendo demo: {url}")
+            if st.button("🚀 Generar Landing", type="primary"):
+                st.success(f"✅ Landing page generada para {servicio_especialidad}")
         
-        st.markdown("---")
-        
-        # Estadísticas de automatizaciones
-        st.subheader("📊 Estadísticas de Automatizaciones")
-        col_stats1, col_stats2, col_stats3, col_stats4 = st.columns(4)
+        # Estadísticas simples
+        st.write("---")
+        st.write("### 📊 Estadísticas")
+        col_stats1, col_stats2, col_stats3 = st.columns(3)
         
         with col_stats1:
-            st.metric("🎂 Tarjetas Generadas", "47", "+12 este mes")
+            st.metric("🎂 Tarjetas", "47", "+12")
         with col_stats2:
-            st.metric("🌐 Landing Pages", "8", "+2 este mes")  
+            st.metric("🌐 Landing Pages", "8", "+2")  
         with col_stats3:
-            st.metric("📈 Conversión Promedio", "23.4%", "+5.2%")
-        with col_stats4:
-            st.metric("⚡ Tiempo Ahorrado", "18h", "+6h este mes")
+            st.metric("📈 Conversión", "23.4%", "+5.2%")
 
     # Footer
     st.markdown("---")
