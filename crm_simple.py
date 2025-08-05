@@ -143,7 +143,8 @@ class CRMSimple:
     
     def init_data(self):
         """Inicializar datos base"""
-        if 'clientes' not in st.session_state:
+        # Forzar actualización si no existe CCDN
+        if 'clientes' not in st.session_state or len(st.session_state.clientes) < 4:
             st.session_state.clientes = pd.DataFrame({
                 'ID': ['CLI001', 'CLI002', 'CLI003', 'CLI004'],
                 'Nombre': ['Dr. José Prieto', 'Histocell', 'Cefes Garage', 'Clínica Cumbres del Norte'],
@@ -6988,6 +6989,14 @@ def main():
     # Botón de cerrar sesión
     if st.sidebar.button("🚪 Cerrar Sesión", type="secondary", use_container_width=True):
         st.session_state.authenticated = False
+        st.rerun()
+    
+    # Botón para actualizar datos (debug)
+    if st.sidebar.button("🔄 Actualizar Datos", help="Forzar actualización de clientes"):
+        if 'clientes' in st.session_state:
+            del st.session_state.clientes
+        crm.init_data()
+        st.sidebar.success("✅ Datos actualizados")
         st.rerun()
     
     # NAVEGACIÓN CATEGORIZADA FUNCIONAL
