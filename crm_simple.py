@@ -165,95 +165,64 @@ class CRMSimple:
         
         if 'cotizaciones' not in st.session_state:
             st.session_state.cotizaciones = pd.DataFrame({
-                'ID': ['COT001', 'COT002', 'COT003', 'COT004'],
-                'Cliente': ['Hospital Regional', 'Clínica Norte', 'Centro Dental', 'Lab Clínico'],
-                'Servicio': ['Marketing Digital Integral', 'SEO + Google Ads', 'Página Web + SEO', 'Portal Pacientes'],
-                'Monto': [1200000, 800000, 600000, 900000],
-                'Estado': ['Enviada', 'Pendiente', 'Aprobada', 'En Negociación'],
-                'Fecha_Envio': ['2024-03-25', '2024-03-22', '2024-03-20', '2024-03-28'],
-                'Fecha_Vencimiento': ['2024-04-15', '2024-04-12', '2024-04-10', '2024-04-18'],
-                'Probabilidad': [70, 60, 90, 50],
-                'Notas': [
-                    'Interesados en marketing completo',
-                    'Presupuesto ajustado, negociando',
-                    'Lista para firmar contrato',
-                    'Requieren más detalles técnicos'
-                ]
+                'ID': [],
+                'Cliente': [],
+                'Servicio': [],
+                'Monto': [],
+                'Estado': [],
+                'Fecha_Envio': [],
+                'Fecha_Vencimiento': [],
+                'Probabilidad': [],
+                'Notas': []
             })
         
         if 'facturas' not in st.session_state:
             st.session_state.facturas = pd.DataFrame({
-                'ID': ['FAC001', 'FAC002', 'FAC003', 'FAC004', 'FAC005'],
-                'Cliente': ['Dr. José Prieto', 'Histocell', 'Dr. José Prieto', 'Histocell', 'Cefes Garage'],
-                'Monto': [1000000, 600000, 1000000, 600000, 300000],
-                'Fecha_Emision': ['2024-01-01', '2024-01-01', '2024-02-01', '2024-02-01', '2024-02-15'],
-                'Fecha_Vencimiento': ['2024-01-31', '2024-01-31', '2024-02-29', '2024-02-29', '2024-03-15'],
-                'Estado': ['Pagada', 'Pagada', 'Pagada', 'Pagada', 'Pendiente'],
-                'Concepto': [
-                    'Marketing Integral Enero',
-                    'Marketing Digital Enero', 
-                    'Marketing Integral Febrero',
-                    'Marketing Digital Febrero',
-                    'Proyecto Sitio Web - Cuota 1'
-                ]
+                'ID': [],
+                'Cliente': [],
+                'Monto': [],
+                'Fecha_Emision': [],
+                'Fecha_Vencimiento': [],
+                'Estado': [],
+                'Concepto': []
             })
         
         if 'proyectos' not in st.session_state:
             st.session_state.proyectos = pd.DataFrame({
-                'ID': ['PRY001', 'PRY002', 'PRY003', 'PRY004'],
-                'Cliente': ['Histocell', 'Dr. José Prieto', 'Cefes Garage', 'Dr. José Prieto'],
-                'Proyecto': ['Portal Pacientes v2.0', 'Sistema Gestión Comercial', 'Sitio Web Corporativo', 'Dashboard Analytics'],
-                'Estado': ['En Desarrollo', 'Completado', 'Planificación', 'En Desarrollo'],
-                'Progreso': [75, 100, 30, 60],
-                'Fecha_Inicio': ['2024-02-01', '2024-01-15', '2024-03-01', '2024-02-15'],
-                'Fecha_Entrega': ['2024-04-15', '2024-03-15', '2024-05-01', '2024-04-01'],
-                'Valor': [850000, 1200000, 300000, 400000],
-                'Responsable': ['Juan Riquelme', 'Juan Riquelme', 'Juan Riquelme', 'Juan Riquelme']
+                'ID': [],
+                'Cliente': [],
+                'Proyecto': [],
+                'Estado': [],
+                'Progreso': [],
+                'Fecha_Inicio': [],
+                'Fecha_Entrega': [],
+                'Valor': [],
+                'Responsable': []
             })
     
     def init_seo_data(self):
         """Inicializar datos SEO"""
         if 'keywords_data' not in st.session_state:
             st.session_state.keywords_data = pd.DataFrame({
-                'Keyword': [
-                    'laboratorio anatomía patológica antofagasta', 'histocell laboratorio', 'biopsia antofagasta', 'exámenes patología antofagasta',
-                    'otorrino antofagasta', 'dr josé prieto otorrino', 'audiometría antofagasta', 'cirugía nasal antofagasta',
-                    'taller mecánico antofagasta', 'cefes garage', 'reparación autos antofagasta', 'mecánica automotriz cefes',
-                    'centro médico integral antofagasta', 'consulta otorrinolaringología', 'laboratorio clínico histocell', 'servicio automotriz antofagasta'
-                ],
-                'Volumen': [380, 280, 450, 320, 520, 180, 290, 240, 680, 150, 890, 200, 420, 350, 310, 540],
-                'Dificultad': [28, 35, 42, 38, 35, 25, 45, 48, 32, 22, 28, 30, 40, 38, 33, 35],
-                'CPC': [3.2, 2.8, 4.1, 3.5, 3.8, 2.2, 4.5, 4.8, 2.1, 1.8, 2.3, 2.0, 3.9, 3.6, 3.1, 2.7],
-                'Posicion_Actual': [1, 2, 3, 4, 1, 2, 5, 8, 1, 1, 2, 3, 2, 4, 1, 3],
-                'Cliente': [
-                    'Histocell', 'Histocell', 'Histocell', 'Histocell',
-                    'Dr. José Prieto', 'Dr. José Prieto', 'Dr. José Prieto', 'Dr. José Prieto', 
-                    'Cefes Garage', 'Cefes Garage', 'Cefes Garage', 'Cefes Garage',
-                    'Dr. José Prieto', 'Dr. José Prieto', 'Histocell', 'Cefes Garage'
-                ],
-                'Estado': [
-                    'Posicionada', 'En progreso', 'En progreso', 'Nuevo',
-                    'Posicionada', 'En progreso', 'En progreso', 'Nuevo',
-                    'Posicionada', 'Posicionada', 'En progreso', 'En progreso',
-                    'En progreso', 'Nuevo', 'Posicionada', 'En progreso'
-                ],
-                'Fecha_Analisis': [
-                    '2025-01-15', '2025-01-14', '2025-01-13', '2025-01-12',
-                    '2025-01-15', '2025-01-14', '2025-01-13', '2025-01-12',
-                    '2025-01-15', '2025-01-14', '2025-01-13', '2025-01-12',
-                    '2025-01-11', '2025-01-10', '2025-01-11', '2025-01-10'
-                ]
+                'Keyword': [],
+                'Volumen': [],
+                'Dificultad': [],
+                'CPC': [],
+                'Posicion_Actual': [],
+                'Cliente': [],
+                'Estado': [],
+                'Fecha_Analisis': []
             })
         
         if 'proyectos_seo' not in st.session_state:
             st.session_state.proyectos_seo = pd.DataFrame({
-                'Cliente': ['Histocell', 'Dr. José Prieto', 'Cefes Garage'],
-                'Proyecto': ['SEO + Portal Pacientes v2.0', 'SEO Local + Telemedicina', 'SEO Local + E-commerce Repuestos'],
-                'Keywords_Objetivo': [18, 12, 10],
-                'Keywords_Posicionadas': [15, 8, 6],
-                'Progreso': [85, 72, 65],
-                'Trafico_Mensual': [3200, 1800, 1400],
-                'Estado': ['Activo', 'Activo', 'Activo']
+                'Cliente': [],
+                'Proyecto': [],
+                'Keywords_Objetivo': [],
+                'Keywords_Posicionadas': [],
+                'Progreso': [],
+                'Trafico_Mensual': [],
+                'Estado': []
             })
     
     def init_agentes_mcp(self):
@@ -646,12 +615,28 @@ class CRMSimple:
         """Gestión de cotizaciones"""
         st.header("📋 Gestión de Cotizaciones")
         
+        # Estado del módulo
+        if len(st.session_state.cotizaciones) == 0:
+            st.info("""
+            ### 🔧 **MÓDULO EN DESARROLLO**
+            
+            **¿Qué falta para que sea funcional?**
+            - ✅ Crear nueva cotización
+            - ✅ Editar cotizaciones existentes
+            - ✅ Cambiar estado (Enviada → Aprobada → Facturada)
+            - ✅ Calcular probabilidades de cierre
+            - ✅ Generar PDFs de cotizaciones
+            - ✅ Seguimiento de vencimientos
+            
+            **📊 Actualmente:** Estructura lista, sin datos reales
+            """)
+        
         # Métricas de cotizaciones
         col1, col2, col3, col4 = st.columns(4)
         
         total_cotizaciones = len(st.session_state.cotizaciones)
-        valor_total = st.session_state.cotizaciones['Monto'].sum()
-        cotiz_aprobadas = len(st.session_state.cotizaciones[st.session_state.cotizaciones['Estado'] == 'Aprobada'])
+        valor_total = st.session_state.cotizaciones['Monto'].sum() if total_cotizaciones > 0 else 0
+        cotiz_aprobadas = len(st.session_state.cotizaciones[st.session_state.cotizaciones['Estado'] == 'Aprobada']) if total_cotizaciones > 0 else 0
         tasa_conversion = (cotiz_aprobadas / total_cotizaciones * 100) if total_cotizaciones > 0 else 0
         
         with col1:
@@ -736,13 +721,32 @@ class CRMSimple:
         """Gestión de facturación"""
         st.header("💰 Gestión de Facturación")
         
+        # Estado del módulo
+        if len(st.session_state.facturas) == 0:
+            st.info("""
+            ### 💰 **MÓDULO FACTURACIÓN - ESTRUCTURA LISTA**
+            
+            **¿Qué podemos hacer aquí?**
+            - 🧾 **Crear nueva factura** (desde cotización aprobada)
+            - 📝 **Editar factura existente** (antes de enviar)
+            - 📊 **Cambiar estado** (Pendiente → Enviada → Pagada)
+            - 📅 **Gestionar vencimientos** (alertas automáticas)
+            - 📈 **Reportes financieros** (ingresos por período)
+            - 📋 **Seguimiento de pagos** (recordatorios)
+            - 🔄 **Integración contable** (exportar a sistemas)
+            - 📄 **Generar PDFs** (formato profesional)
+            
+            **📊 Estado:** Estructura completa, listo para datos reales
+            **💡 Conectar con:** Sistema contable existente de la agencia
+            """)
+        
         # Métricas de facturación
         col1, col2, col3, col4 = st.columns(4)
         
-        total_facturado = st.session_state.facturas['Monto'].sum()
-        facturas_pagadas = len(st.session_state.facturas[st.session_state.facturas['Estado'] == 'Pagada'])
-        facturas_pendientes = len(st.session_state.facturas[st.session_state.facturas['Estado'] == 'Pendiente'])
-        monto_pendiente = st.session_state.facturas[st.session_state.facturas['Estado'] == 'Pendiente']['Monto'].sum()
+        total_facturado = st.session_state.facturas['Monto'].sum() if len(st.session_state.facturas) > 0 else 0
+        facturas_pagadas = len(st.session_state.facturas[st.session_state.facturas['Estado'] == 'Pagada']) if len(st.session_state.facturas) > 0 else 0
+        facturas_pendientes = len(st.session_state.facturas[st.session_state.facturas['Estado'] == 'Pendiente']) if len(st.session_state.facturas) > 0 else 0
+        monto_pendiente = st.session_state.facturas[st.session_state.facturas['Estado'] == 'Pendiente']['Monto'].sum() if len(st.session_state.facturas) > 0 else 0
         
         with col1:
             st.metric("💰 Total Facturado", f"${total_facturado:,.0f}")
@@ -832,13 +836,45 @@ class CRMSimple:
         """Gestión de proyectos"""
         st.header("🚀 Gestión de Proyectos")
         
+        # Estado del módulo y opciones de desarrollo
+        if len(st.session_state.proyectos) == 0:
+            st.warning("""
+            ### 🚨 **MÓDULO CRÍTICO - NECESITA DESARROLLO URGENTE**
+            
+            **¿Qué podemos hacer aquí?**
+            - 🆕 **Crear nuevo proyecto** (formulario completo)
+            - ✏️ **Editar proyecto existente** (todos los campos)
+            - 🗑️ **Eliminar proyecto** (con confirmación)  
+            - 🔄 **Cambiar estado** (Planificación → En Desarrollo → Completado)
+            - 👤 **Asignar responsables** (miembros del equipo)
+            - 📊 **Actualizar progreso** (% completado)
+            - 📅 **Gestionar fechas** (inicio, entrega, hitos)
+            - 💰 **Seguimiento financiero** (presupuesto vs gastado)
+            - 📋 **Tareas y subtareas** (checklist detallado)
+            - 📈 **Dashboard de proyecto** (métricas individuales)
+            
+            **🎯 RECOMENDACIÓN:** Este es el módulo más importante para implementar CRUD completo
+            """)
+            
+            # Botón para iniciar desarrollo
+            if st.button("🛠️ **DESARROLLAR MÓDULO PROYECTOS COMPLETO**", type="primary", use_container_width=True):
+                st.success("✅ ¡Perfecto! Vamos a desarrollar el sistema completo de gestión de proyectos con todas las funcionalidades CRUD.")
+                st.info("📋 Incluirá: Crear, Editar, Eliminar, Estados, Responsables, Progreso, Fechas, Presupuestos y Dashboard individual.")
+                # Activar modo desarrollo
+                st.session_state.desarrollar_proyectos = True
+                st.rerun()
+        
+        # Modo desarrollo activado
+        if hasattr(st.session_state, 'desarrollar_proyectos') and st.session_state.desarrollar_proyectos:
+            self.sistema_proyectos_completo()
+        
         # Métricas de proyectos
         col1, col2, col3, col4 = st.columns(4)
         
         total_proyectos = len(st.session_state.proyectos)
-        proyectos_activos = len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'En Desarrollo'])
-        proyectos_completados = len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'Completado'])
-        valor_total_pry = st.session_state.proyectos['Valor'].sum()
+        proyectos_activos = len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'En Desarrollo']) if total_proyectos > 0 else 0
+        proyectos_completados = len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'Completado']) if total_proyectos > 0 else 0
+        valor_total_pry = st.session_state.proyectos['Valor'].sum() if total_proyectos > 0 else 0
         
         with col1:
             st.metric("🚀 Total Proyectos", total_proyectos)
@@ -946,6 +982,30 @@ class CRMSimple:
     def keyword_research_automatizado(self):
         """Sistema de keyword research automatizado"""
         st.subheader("🤖 Generación Automática de Keywords")
+        
+        # Estado del módulo
+        if len(st.session_state.keywords_data) == 0:
+            st.error("""
+            ### ⚠️ **MÓDULO KEYWORDS RESEARCH - DATOS SIMULADOS**
+            
+            **🚨 PROBLEMA ACTUAL:**
+            - Los datos de keywords son **generados por IA**, no reales
+            - Volúmenes y métricas son **estimaciones aproximadas**
+            - No hay conexión con herramientas SEO profesionales
+            
+            **🔧 PARA HACERLO FUNCIONAL NECESITAS:**
+            - 🔑 **API Key de Semrush** ($99/mes) - datos reales de volumen/dificultad
+            - 🔑 **API Key de Ahrefs** ($99/mes) - métricas de backlinks/dificultad  
+            - 🔑 **Google Keyword Planner API** - volúmenes oficiales de Google
+            - 🔑 **OpenRouter API Key** (actual) - para generación inteligente
+            
+            **💡 ALTERNATIVAS GRATUITAS:**
+            - Google Trends API (tendencias)
+            - Ubersuggest gratuito (limitado)
+            - Keywords Everywhere (chrome extension)
+            
+            **📊 Actualmente:** Solo simulación educativa con IA
+            """)
         
         col1, col2 = st.columns(2)
         
@@ -8858,6 +8918,319 @@ def main():
                     "facturas.csv",
                     "text/csv"
                 )
+    
+    def sistema_proyectos_completo(self):
+        """Sistema completo de gestión de proyectos con todas las funcionalidades CRUD"""
+        st.header("🚀 **SISTEMA COMPLETO DE PROYECTOS**")
+        
+        # Tabs para organizar funcionalidades
+        tab1, tab2, tab3, tab4 = st.tabs(["🆕 Crear Proyecto", "📋 Lista Proyectos", "📊 Dashboard", "⚙️ Configuración"])
+        
+        with tab1:
+            self.crear_nuevo_proyecto()
+        
+        with tab2:
+            self.listar_proyectos_crud()
+        
+        with tab3:
+            self.dashboard_proyectos()
+        
+        with tab4:
+            self.configuracion_proyectos()
+    
+    def crear_nuevo_proyecto(self):
+        """Formulario para crear nuevo proyecto"""
+        st.subheader("🆕 Crear Nuevo Proyecto")
+        
+        with st.form("nuevo_proyecto"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                nombre_proyecto = st.text_input("📋 Nombre del Proyecto*", placeholder="Ej: Portal Pacientes v2.0")
+                cliente_proyecto = st.selectbox("👥 Cliente*", ["Seleccionar..."] + list(st.session_state.clientes['Nombre'].tolist()))
+                fecha_inicio = st.date_input("📅 Fecha de Inicio*")
+                valor_proyecto = st.number_input("💰 Valor del Proyecto*", min_value=0, step=50000, format="%d")
+            
+            with col2:
+                descripcion = st.text_area("📝 Descripción", placeholder="Describe el proyecto y sus objetivos...")
+                fecha_entrega = st.date_input("🎯 Fecha de Entrega Estimada*")
+                responsable = st.selectbox("👤 Responsable Principal*", ["Jorge Riquelme", "Equipo Técnico", "Equipo Diseño", "Freelancer"])
+                estado_inicial = st.selectbox("📊 Estado Inicial", ["Planificación", "En Desarrollo", "En Pausa"])
+            
+            # Sección de tareas
+            st.subheader("📋 Tareas Principales")
+            tareas = st.text_area("✅ Lista de Tareas (una por línea)", 
+                                placeholder="Análisis de requerimientos\nDiseño UI/UX\nDesarrollo backend\nTesting\nDeployment")
+            
+            submitted = st.form_submit_button("🚀 **CREAR PROYECTO**", type="primary", use_container_width=True)
+            
+            if submitted:
+                if nombre_proyecto and cliente_proyecto != "Seleccionar..." and fecha_inicio and fecha_entrega and valor_proyecto > 0:
+                    # Generar ID único
+                    nuevo_id = f"PRY{len(st.session_state.proyectos) + 1:03d}"
+                    
+                    # Procesar tareas
+                    lista_tareas = [tarea.strip() for tarea in tareas.split('\n') if tarea.strip()]
+                    
+                    # Crear proyecto
+                    nuevo_proyecto = {
+                        'ID': nuevo_id,
+                        'Cliente': cliente_proyecto,
+                        'Proyecto': nombre_proyecto,
+                        'Descripcion': descripcion,
+                        'Estado': estado_inicial,
+                        'Progreso': 0,
+                        'Fecha_Inicio': fecha_inicio.strftime('%Y-%m-%d'),
+                        'Fecha_Entrega': fecha_entrega.strftime('%Y-%m-%d'),
+                        'Valor': valor_proyecto,
+                        'Responsable': responsable,
+                        'Tareas': lista_tareas,
+                        'Fecha_Creacion': datetime.now().strftime('%Y-%m-%d %H:%M')
+                    }
+                    
+                    # Agregar al DataFrame
+                    st.session_state.proyectos = pd.concat([
+                        st.session_state.proyectos, 
+                        pd.DataFrame([nuevo_proyecto])
+                    ], ignore_index=True)
+                    
+                    # Guardar datos
+                    self.save_data('proyectos')
+                    
+                    st.success(f"✅ **Proyecto '{nombre_proyecto}' creado exitosamente!**")
+                    st.info(f"🆔 ID asignado: {nuevo_id}")
+                    st.balloons()
+                else:
+                    st.error("❌ Por favor completa todos los campos marcados con *")
+    
+    def listar_proyectos_crud(self):
+        """Lista de proyectos con opciones CRUD"""
+        st.subheader("📋 Gestión de Proyectos")
+        
+        if len(st.session_state.proyectos) == 0:
+            st.info("🔄 No hay proyectos creados. Ve a la pestaña 'Crear Proyecto' para agregar el primero.")
+            return
+        
+        # Filtros
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            filtro_cliente = st.selectbox("👥 Filtrar por Cliente", ["Todos"] + list(st.session_state.proyectos['Cliente'].unique()))
+        with col2:
+            filtro_estado = st.selectbox("📊 Filtrar por Estado", ["Todos"] + list(st.session_state.proyectos['Estado'].unique()))
+        with col3:
+            filtro_responsable = st.selectbox("👤 Filtrar por Responsable", ["Todos"] + list(st.session_state.proyectos['Responsable'].unique()))
+        
+        # Aplicar filtros
+        df_filtrado = st.session_state.proyectos.copy()
+        if filtro_cliente != "Todos":
+            df_filtrado = df_filtrado[df_filtrado['Cliente'] == filtro_cliente]
+        if filtro_estado != "Todos":
+            df_filtrado = df_filtrado[df_filtrado['Estado'] == filtro_estado]
+        if filtro_responsable != "Todos":
+            df_filtrado = df_filtrado[df_filtrado['Responsable'] == filtro_responsable]
+        
+        # Lista de proyectos
+        for idx, proyecto in df_filtrado.iterrows():
+            with st.container():
+                # Header del proyecto
+                col1, col2, col3, col4 = st.columns([3, 1, 1, 1])
+                
+                with col1:
+                    # Estado con colores
+                    estado_colors = {
+                        'Planificación': '🔵', 'En Desarrollo': '🟡',
+                        'Completado': '🟢', 'En Pausa': '🔴', 'Cancelado': '⚫'
+                    }
+                    color = estado_colors.get(proyecto['Estado'], '⚪')
+                    
+                    st.markdown(f"### {color} **{proyecto['Proyecto']}**")
+                    st.write(f"👥 **Cliente:** {proyecto['Cliente']} | 👤 **Responsable:** {proyecto['Responsable']}")
+                    st.write(f"💰 **Valor:** ${proyecto['Valor']:,.0f} | 📅 **Entrega:** {proyecto['Fecha_Entrega']}")
+                
+                with col2:
+                    # Progreso
+                    st.metric("📊 Progreso", f"{proyecto['Progreso']}%")
+                
+                with col3:
+                    # Botón editar
+                    if st.button("✏️ Editar", key=f"edit_{proyecto['ID']}"):
+                        st.session_state[f"editing_{proyecto['ID']}"] = True
+                        st.rerun()
+                
+                with col4:
+                    # Botón eliminar
+                    if st.button("🗑️ Eliminar", key=f"delete_{proyecto['ID']}"):
+                        st.session_state[f"confirm_delete_{proyecto['ID']}"] = True
+                        st.rerun()
+                
+                # Confirmación de eliminación
+                if st.session_state.get(f"confirm_delete_{proyecto['ID']}", False):
+                    st.error(f"⚠️ **¿Eliminar proyecto '{proyecto['Proyecto']}'?**")
+                    col_si, col_no = st.columns(2)
+                    with col_si:
+                        if st.button("🗑️ SÍ, ELIMINAR", key=f"confirm_yes_{proyecto['ID']}", type="primary"):
+                            # Eliminar proyecto
+                            st.session_state.proyectos = st.session_state.proyectos[st.session_state.proyectos['ID'] != proyecto['ID']]
+                            self.save_data('proyectos')
+                            # Limpiar estado
+                            del st.session_state[f"confirm_delete_{proyecto['ID']}"]
+                            st.success(f"✅ Proyecto '{proyecto['Proyecto']}' eliminado")
+                            st.rerun()
+                    with col_no:
+                        if st.button("❌ Cancelar", key=f"confirm_no_{proyecto['ID']}"):
+                            del st.session_state[f"confirm_delete_{proyecto['ID']}"]
+                            st.rerun()
+                
+                # Formulario de edición
+                if st.session_state.get(f"editing_{proyecto['ID']}", False):
+                    with st.form(f"editar_{proyecto['ID']}"):
+                        st.subheader(f"✏️ Editando: {proyecto['Proyecto']}")
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            nuevo_nombre = st.text_input("📋 Nombre", value=proyecto['Proyecto'])
+                            nuevo_estado = st.selectbox("📊 Estado", 
+                                                      ["Planificación", "En Desarrollo", "Completado", "En Pausa", "Cancelado"],
+                                                      index=["Planificación", "En Desarrollo", "Completado", "En Pausa", "Cancelado"].index(proyecto['Estado']))
+                            nuevo_progreso = st.slider("📊 Progreso (%)", 0, 100, int(proyecto['Progreso']))
+                        
+                        with col2:
+                            nuevo_responsable = st.selectbox("👤 Responsable", 
+                                                           ["Jorge Riquelme", "Equipo Técnico", "Equipo Diseño", "Freelancer"],
+                                                           index=["Jorge Riquelme", "Equipo Técnico", "Equipo Diseño", "Freelancer"].index(proyecto['Responsable']) if proyecto['Responsable'] in ["Jorge Riquelme", "Equipo Técnico", "Equipo Diseño", "Freelancer"] else 0)
+                            nueva_fecha_entrega = st.date_input("🎯 Fecha Entrega", value=pd.to_datetime(proyecto['Fecha_Entrega']).date())
+                            nuevo_valor = st.number_input("💰 Valor", value=int(proyecto['Valor']), step=50000)
+                        
+                        nueva_descripcion = st.text_area("📝 Descripción", value=proyecto.get('Descripcion', ''))
+                        
+                        col_guardar, col_cancelar = st.columns(2)
+                        with col_guardar:
+                            if st.form_submit_button("💾 **GUARDAR CAMBIOS**", type="primary", use_container_width=True):
+                                # Actualizar proyecto
+                                st.session_state.proyectos.loc[st.session_state.proyectos['ID'] == proyecto['ID'], 'Proyecto'] = nuevo_nombre
+                                st.session_state.proyectos.loc[st.session_state.proyectos['ID'] == proyecto['ID'], 'Estado'] = nuevo_estado
+                                st.session_state.proyectos.loc[st.session_state.proyectos['ID'] == proyecto['ID'], 'Progreso'] = nuevo_progreso
+                                st.session_state.proyectos.loc[st.session_state.proyectos['ID'] == proyecto['ID'], 'Responsable'] = nuevo_responsable
+                                st.session_state.proyectos.loc[st.session_state.proyectos['ID'] == proyecto['ID'], 'Fecha_Entrega'] = nueva_fecha_entrega.strftime('%Y-%m-%d')
+                                st.session_state.proyectos.loc[st.session_state.proyectos['ID'] == proyecto['ID'], 'Valor'] = nuevo_valor
+                                st.session_state.proyectos.loc[st.session_state.proyectos['ID'] == proyecto['ID'], 'Descripcion'] = nueva_descripcion
+                                
+                                self.save_data('proyectos')
+                                del st.session_state[f"editing_{proyecto['ID']}"]
+                                st.success(f"✅ Proyecto '{nuevo_nombre}' actualizado!")
+                                st.rerun()
+                        
+                        with col_cancelar:
+                            if st.form_submit_button("❌ Cancelar", use_container_width=True):
+                                del st.session_state[f"editing_{proyecto['ID']}"]
+                                st.rerun()
+                
+                st.markdown("---")
+    
+    def dashboard_proyectos(self):
+        """Dashboard con métricas y gráficos de proyectos"""
+        st.subheader("📊 Dashboard de Proyectos")
+        
+        if len(st.session_state.proyectos) == 0:
+            st.info("📊 Dashboard estará disponible cuando tengas proyectos creados.")
+            return
+        
+        # Métricas generales
+        col1, col2, col3, col4 = st.columns(4)
+        
+        total_proyectos = len(st.session_state.proyectos)
+        valor_total = st.session_state.proyectos['Valor'].sum()
+        progreso_promedio = st.session_state.proyectos['Progreso'].mean()
+        proyectos_activos = len(st.session_state.proyectos[st.session_state.proyectos['Estado'].isin(['En Desarrollo', 'Planificación'])])
+        
+        with col1:
+            st.metric("🚀 Total Proyectos", total_proyectos)
+        with col2:
+            st.metric("💰 Valor Total", f"${valor_total:,.0f}")
+        with col3:
+            st.metric("📊 Progreso Promedio", f"{progreso_promedio:.1f}%")
+        with col4:
+            st.metric("⚡ Proyectos Activos", proyectos_activos)
+        
+        # Gráficos
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Gráfico de estados
+            import plotly.express as px
+            
+            estados_count = st.session_state.proyectos['Estado'].value_counts()
+            fig_estados = px.pie(
+                values=estados_count.values,
+                names=estados_count.index,
+                title="📊 Distribución por Estado"
+            )
+            st.plotly_chart(fig_estados, use_container_width=True)
+        
+        with col2:
+            # Gráfico de valores por cliente
+            clientes_valor = st.session_state.proyectos.groupby('Cliente')['Valor'].sum().reset_index()
+            fig_clientes = px.bar(
+                clientes_valor,
+                x='Cliente',
+                y='Valor',
+                title="💰 Valor por Cliente"
+            )
+            st.plotly_chart(fig_clientes, use_container_width=True)
+        
+        # Tabla resumen
+        st.subheader("📋 Resumen Detallado")
+        resumen = st.session_state.proyectos[['Proyecto', 'Cliente', 'Estado', 'Progreso', 'Valor', 'Responsable']].copy()
+        resumen['Valor'] = resumen['Valor'].apply(lambda x: f"${x:,.0f}")
+        resumen['Progreso'] = resumen['Progreso'].apply(lambda x: f"{x}%")
+        st.dataframe(resumen, use_container_width=True)
+    
+    def configuracion_proyectos(self):
+        """Configuración del módulo de proyectos"""
+        st.subheader("⚙️ Configuración de Proyectos")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("**🎨 Estados de Proyecto**")
+            st.info("""
+            - 🔵 **Planificación**: Proyecto en fase de análisis
+            - 🟡 **En Desarrollo**: Trabajo activo en progreso  
+            - 🟢 **Completado**: Proyecto finalizado exitosamente
+            - 🔴 **En Pausa**: Temporalmente detenido
+            - ⚫ **Cancelado**: Proyecto terminado sin completar
+            """)
+            
+            st.write("**👥 Responsables Disponibles**")
+            responsables = ["Jorge Riquelme", "Equipo Técnico", "Equipo Diseño", "Freelancer"]
+            for resp in responsables:
+                st.write(f"• {resp}")
+        
+        with col2:
+            st.write("**📊 Funcionalidades Disponibles**")
+            st.success("""
+            ✅ **IMPLEMENTADO:**
+            - Crear nuevo proyecto
+            - Editar proyecto existente
+            - Eliminar proyecto (con confirmación)
+            - Cambiar estado y progreso
+            - Dashboard con métricas
+            - Filtros por cliente/estado/responsable
+            - Persistencia de datos
+            - Visualizaciones con gráficos
+            """)
+            
+            st.write("**🔄 Acciones Disponibles**")
+            if st.button("🔄 Resetear Sistema", type="secondary"):
+                if st.button("⚠️ Confirmar Reset"):
+                    st.session_state.proyectos = pd.DataFrame({
+                        'ID': [], 'Cliente': [], 'Proyecto': [], 'Estado': [],
+                        'Progreso': [], 'Fecha_Inicio': [], 'Fecha_Entrega': [],
+                        'Valor': [], 'Responsable': []
+                    })
+                    del st.session_state.desarrollar_proyectos
+                    st.success("✅ Sistema reseteado")
+                    st.rerun()
     
     # Footer
     st.markdown("---")
