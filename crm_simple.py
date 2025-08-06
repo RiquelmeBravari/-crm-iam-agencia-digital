@@ -10359,16 +10359,6 @@ def main():
         ]
         
         st.session_state.cotizaciones = pd.DataFrame(cotizaciones_demo)
-            self.pipeline_cotizaciones()
-        
-        with tab3:
-            self.automatizacion_cotizaciones()
-        
-        with tab4:
-            self.reportes_cotizaciones()
-        
-        with tab5:
-            self.configuracion_cotizaciones()
     
     def gestion_cotizaciones_crud(self):
         """CRUD completo para cotizaciones"""
