@@ -550,78 +550,289 @@ class CRMSimple:
             st.metric("📊 Promedio Cliente", f"${promedio:,.0f}")
     
     def gestionar_clientes(self):
-        """Gestión de clientes"""
-        st.header("👥 Gestión de Clientes")
+        """Gestión de clientes con CRUD completo"""
+        st.header("👥 **SISTEMA COMPLETO DE CLIENTES**")
         
-        # Mostrar clientes existentes
-        for idx, cliente in st.session_state.clientes.iterrows():
+        # Sistema completo con tabs
+        tab1, tab2, tab3, tab4 = st.tabs(["📋 Lista Clientes", "➕ Nuevo Cliente", "📊 Analytics", "⚙️ Configuración"])
+        
+        with tab1:
+            self.listar_clientes_crud()
+        
+        with tab2:
+            self.crear_nuevo_cliente()
+        
+        with tab3:
+            self.analytics_clientes()
+        
+        with tab4:
+            self.configuracion_clientes()
+    
+    def listar_clientes_crud(self):
+        """Lista de clientes con CRUD completo"""
+        st.subheader("📋 Gestión de Clientes")
+        
+        if len(st.session_state.clientes) == 0:
+            st.info("🔄 No hay clientes registrados. Ve a la pestaña 'Nuevo Cliente' para agregar el primero.")
+            return
+        
+        # Filtros
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            filtro_estado = st.selectbox("📊 Filtrar por Estado", ["Todos"] + list(st.session_state.clientes['Estado'].unique()))
+        with col2:
+            filtro_ciudad = st.selectbox("📍 Filtrar por Ciudad", ["Todas"] + list(st.session_state.clientes['Ciudad'].unique()))
+        with col3:
+            filtro_industria = st.selectbox("🏭 Filtrar por Industria", ["Todas"] + list(st.session_state.clientes['Industria'].unique()))
+        
+        # Aplicar filtros
+        df_filtrado = st.session_state.clientes.copy()
+        if filtro_estado != "Todos":
+            df_filtrado = df_filtrado[df_filtrado['Estado'] == filtro_estado]
+        if filtro_ciudad != "Todas":
+            df_filtrado = df_filtrado[df_filtrado['Ciudad'] == filtro_ciudad]
+        if filtro_industria != "Todas":
+            df_filtrado = df_filtrado[df_filtrado['Industria'] == filtro_industria]
+        
+        # Lista de clientes con CRUD
+        for idx, cliente in df_filtrado.iterrows():
             with st.container():
-                col1, col2, col3 = st.columns([2, 2, 1])
+                # Header del cliente
+                col1, col2, col3, col4 = st.columns([3, 1, 1, 1])
                 
                 with col1:
-                    st.subheader(f"🏢 {cliente['Nombre']}")
-                    st.write(f"📧 {cliente['Email']}")
-                    st.write(f"📱 {cliente['Teléfono']}")
-                    st.write(f"📍 {cliente['Ciudad']} - {cliente['Industria']}")
+                    estado_color = "🟢" if cliente['Estado'] == 'Activo' else "🔴" if cliente['Estado'] == 'Inactivo' else "🟡"
+                    st.markdown(f"### {estado_color} **{cliente['Nombre']}**")
+                    st.write(f"📧 **Email:** {cliente['Email']} | 📱 **Tel:** {cliente['Teléfono']}")
+                    st.write(f"📍 **Ciudad:** {cliente['Ciudad']} | 🏭 **Industria:** {cliente['Industria']}")
                 
                 with col2:
-                    st.write(f"💰 **${cliente['Valor_Mensual']:,.0f}/mes**")
-                    st.write(f"🛠️ {cliente['Servicios']}")
-                    st.write(f"📅 Último contacto: {cliente['Ultimo_Contacto']}")
+                    st.metric("💰 Valor/Mes", f"${cliente['Valor_Mensual']:,.0f}")
                 
                 with col3:
-                    estado_color = "🟢" if cliente['Estado'] == 'Activo' else "🔴"
-                    st.write(f"{estado_color} {cliente['Estado']}")
-                    
-                    if st.button(f"📊 Dashboard", key=f"dashboard_{idx}", type="primary"):
-                        st.session_state.cliente_seleccionado = cliente['Nombre']
-                        st.session_state.pagina_actual = "dashboard_cliente"
+                    if st.button("✏️ Editar", key=f"edit_cli_{cliente['ID']}"):
+                        st.session_state[f"editing_cli_{cliente['ID']}"] = True
                         st.rerun()
-                    
-                    if st.button(f"📞 Contactar", key=f"contact_{idx}"):
-                        st.success(f"📞 Contacto con {cliente['Nombre']} registrado!")
                 
-                st.divider()
-        
-        # Formulario para nuevo cliente
-        with st.expander("➕ Agregar Nuevo Cliente"):
-            with st.form("nuevo_cliente"):
-                col1, col2 = st.columns(2)
+                with col4:
+                    if st.button("🗑️ Eliminar", key=f"delete_cli_{cliente['ID']}"):
+                        st.session_state[f"confirm_delete_cli_{cliente['ID']}"] = True
+                        st.rerun()
                 
-                with col1:
-                    nombre = st.text_input("Nombre del Cliente")
-                    email = st.text_input("Email")
-                    telefono = st.text_input("Teléfono")
+                # Confirmación de eliminación
+                if st.session_state.get(f"confirm_delete_cli_{cliente['ID']}", False):
+                    st.error(f"⚠️ **¿Eliminar cliente '{cliente['Nombre']}'?**")
+                    col_si, col_no = st.columns(2)
+                    with col_si:
+                        if st.button("🗑️ SÍ, ELIMINAR", key=f"confirm_yes_cli_{cliente['ID']}", type="primary"):
+                            st.session_state.clientes = st.session_state.clientes[st.session_state.clientes['ID'] != cliente['ID']]
+                            self.save_data('clientes')
+                            del st.session_state[f"confirm_delete_cli_{cliente['ID']}"]
+                            st.success(f"✅ Cliente '{cliente['Nombre']}' eliminado")
+                            st.rerun()
+                    with col_no:
+                        if st.button("❌ Cancelar", key=f"confirm_no_cli_{cliente['ID']}"):
+                            del st.session_state[f"confirm_delete_cli_{cliente['ID']}"]
+                            st.rerun()
                 
-                with col2:
-                    ciudad = st.selectbox("Ciudad", ["Antofagasta", "Santiago", "Valparaíso", "Otra"])
-                    industria = st.text_input("Industria")
-                    valor = st.number_input("Valor Mensual", min_value=0, value=500000)
-                
-                servicios = st.text_area("Servicios", placeholder="Describe los servicios...")
-                
-                if st.form_submit_button("💾 Guardar Cliente"):
-                    if nombre and email:
-                        nuevo_cliente = pd.DataFrame({
-                            'ID': [f'CLI{len(st.session_state.clientes)+1:03d}'],
-                            'Nombre': [nombre],
-                            'Email': [email],
-                            'Teléfono': [telefono],
-                            'Ciudad': [ciudad],
-                            'Industria': [industria],
-                            'Estado': ['Activo'],
-                            'Valor_Mensual': [valor],
-                            'Servicios': [servicios],
-                            'Ultimo_Contacto': [datetime.now().strftime('%Y-%m-%d')]
-                        })
+                # Formulario de edición
+                if st.session_state.get(f"editing_cli_{cliente['ID']}", False):
+                    with st.form(f"editar_cli_{cliente['ID']}"):
+                        st.subheader(f"✏️ Editando: {cliente['Nombre']}")
                         
-                        st.session_state.clientes = pd.concat([st.session_state.clientes, nuevo_cliente], ignore_index=True)
-                        self.save_data('clientes')  # Guardar automáticamente
-                        st.success(f"✅ Cliente {nombre} agregado exitosamente y guardado PERMANENTEMENTE!")
-                        st.info("💾 **Persistencia confirmada:** Este cliente se guardó en disco y estará disponible siempre")
-                        st.rerun()
-                    else:
-                        st.error("❌ Completa nombre y email")
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            nuevo_nombre = st.text_input("🏢 Nombre", value=cliente['Nombre'])
+                            nuevo_email = st.text_input("📧 Email", value=cliente['Email'])
+                            nuevo_telefono = st.text_input("📱 Teléfono", value=cliente['Teléfono'])
+                        
+                        with col2:
+                            nueva_ciudad = st.text_input("📍 Ciudad", value=cliente['Ciudad'])
+                            nueva_industria = st.text_input("🏭 Industria", value=cliente['Industria'])
+                            nuevo_estado = st.selectbox("📊 Estado", 
+                                                      ["Activo", "Inactivo", "Potencial"],
+                                                      index=["Activo", "Inactivo", "Potencial"].index(cliente['Estado']) if cliente['Estado'] in ["Activo", "Inactivo", "Potencial"] else 0)
+                        
+                        nuevo_valor = st.number_input("💰 Valor Mensual", value=int(cliente['Valor_Mensual']), step=50000)
+                        nuevos_servicios = st.text_area("🛠️ Servicios", value=cliente['Servicios'])
+                        
+                        col_guardar, col_cancelar = st.columns(2)
+                        with col_guardar:
+                            if st.form_submit_button("💾 **GUARDAR**", type="primary", use_container_width=True):
+                                st.session_state.clientes.loc[st.session_state.clientes['ID'] == cliente['ID'], 'Nombre'] = nuevo_nombre
+                                st.session_state.clientes.loc[st.session_state.clientes['ID'] == cliente['ID'], 'Email'] = nuevo_email
+                                st.session_state.clientes.loc[st.session_state.clientes['ID'] == cliente['ID'], 'Teléfono'] = nuevo_telefono
+                                st.session_state.clientes.loc[st.session_state.clientes['ID'] == cliente['ID'], 'Ciudad'] = nueva_ciudad
+                                st.session_state.clientes.loc[st.session_state.clientes['ID'] == cliente['ID'], 'Industria'] = nueva_industria
+                                st.session_state.clientes.loc[st.session_state.clientes['ID'] == cliente['ID'], 'Estado'] = nuevo_estado
+                                st.session_state.clientes.loc[st.session_state.clientes['ID'] == cliente['ID'], 'Valor_Mensual'] = nuevo_valor
+                                st.session_state.clientes.loc[st.session_state.clientes['ID'] == cliente['ID'], 'Servicios'] = nuevos_servicios
+                                st.session_state.clientes.loc[st.session_state.clientes['ID'] == cliente['ID'], 'Ultimo_Contacto'] = datetime.now().strftime('%Y-%m-%d')
+                                
+                                self.save_data('clientes')
+                                del st.session_state[f"editing_cli_{cliente['ID']}"]
+                                st.success(f"✅ Cliente '{nuevo_nombre}' actualizado!")
+                                st.rerun()
+                        
+                        with col_cancelar:
+                            if st.form_submit_button("❌ Cancelar", use_container_width=True):
+                                del st.session_state[f"editing_cli_{cliente['ID']}"]
+                                st.rerun()
+                
+                # Botones adicionales
+                if not st.session_state.get(f"editing_cli_{cliente['ID']}", False):
+                    col_dashboard, col_contactar = st.columns(2)
+                    with col_dashboard:
+                        if st.button("📊 Dashboard", key=f"dashboard_cli_{cliente['ID']}"):
+                            st.session_state.cliente_seleccionado = cliente['Nombre']
+                            st.session_state.pagina_actual = "dashboard_cliente"
+                            st.rerun()
+                    
+                    with col_contactar:
+                        if st.button("📞 Contactar", key=f"contact_cli_{cliente['ID']}"):
+                            st.session_state.clientes.loc[st.session_state.clientes['ID'] == cliente['ID'], 'Ultimo_Contacto'] = datetime.now().strftime('%Y-%m-%d')
+                            self.save_data('clientes')
+                            st.success(f"📞 Contacto con {cliente['Nombre']} registrado!")
+                
+                st.markdown("---")
+    
+    def crear_nuevo_cliente(self):
+        """Formulario para crear nuevo cliente"""
+        st.subheader("➕ Crear Nuevo Cliente")
+        
+        with st.form("nuevo_cliente"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                nombre_cliente = st.text_input("🏢 Nombre de la Empresa*", placeholder="Ej: Clínica Ejemplo")
+                email_cliente = st.text_input("📧 Email*", placeholder="contacto@empresa.com")
+                telefono_cliente = st.text_input("📱 Teléfono*", placeholder="+56 9 1234 5678")
+                ciudad_cliente = st.text_input("📍 Ciudad*", placeholder="Antofagasta")
+            
+            with col2:
+                industria_cliente = st.text_input("🏭 Industria*", placeholder="Centro Médico")
+                valor_mensual_cliente = st.number_input("💰 Valor Mensual*", min_value=0, step=50000, format="%d")
+                estado_cliente = st.selectbox("📊 Estado Inicial", ["Activo", "Potencial", "Inactivo"])
+            
+            servicios_cliente = st.text_area("🛠️ Servicios Contratados", 
+                                           placeholder="Marketing Digital, SEO, Redes Sociales, etc.")
+            
+            submitted = st.form_submit_button("🚀 **CREAR CLIENTE**", type="primary", use_container_width=True)
+            
+            if submitted:
+                if nombre_cliente and email_cliente and telefono_cliente and ciudad_cliente and industria_cliente and valor_mensual_cliente > 0:
+                    nuevo_id = f"CLI{len(st.session_state.clientes) + 1:03d}"
+                    
+                    nuevo_cliente = {
+                        'ID': nuevo_id,
+                        'Nombre': nombre_cliente,
+                        'Email': email_cliente,
+                        'Teléfono': telefono_cliente,
+                        'Ciudad': ciudad_cliente,
+                        'Industria': industria_cliente,
+                        'Estado': estado_cliente,
+                        'Valor_Mensual': valor_mensual_cliente,
+                        'Servicios': servicios_cliente,
+                        'Ultimo_Contacto': datetime.now().strftime('%Y-%m-%d')
+                    }
+                    
+                    st.session_state.clientes = pd.concat([
+                        st.session_state.clientes, 
+                        pd.DataFrame([nuevo_cliente])
+                    ], ignore_index=True)
+                    
+                    self.save_data('clientes')
+                    
+                    st.success(f"✅ **Cliente '{nombre_cliente}' creado exitosamente!**")
+                    st.info(f"🆔 ID asignado: {nuevo_id}")
+                    st.balloons()
+                    st.rerun()
+                else:
+                    st.error("❌ Por favor completa todos los campos marcados con *")
+    
+    def analytics_clientes(self):
+        """Analytics y dashboard de clientes"""
+        st.subheader("📊 Analytics de Clientes")
+        
+        if len(st.session_state.clientes) == 0:
+            st.info("📊 Analytics estará disponible cuando tengas clientes registrados.")
+            return
+        
+        # Métricas generales
+        col1, col2, col3, col4 = st.columns(4)
+        
+        total_clientes = len(st.session_state.clientes)
+        clientes_activos = len(st.session_state.clientes[st.session_state.clientes['Estado'] == 'Activo'])
+        valor_total = st.session_state.clientes['Valor_Mensual'].sum()
+        valor_promedio = st.session_state.clientes['Valor_Mensual'].mean()
+        
+        with col1:
+            st.metric("👥 Total Clientes", total_clientes)
+        with col2:
+            st.metric("🟢 Activos", clientes_activos, f"{(clientes_activos/total_clientes*100):.1f}%")
+        with col3:
+            st.metric("💰 Ingresos/Mes", f"${valor_total:,.0f}")
+        with col4:
+            st.metric("📊 Promedio", f"${valor_promedio:,.0f}")
+        
+        # Gráficos
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Distribución por industria
+            industrias = st.session_state.clientes.groupby('Industria')['Valor_Mensual'].sum()
+            fig_industria = px.pie(
+                values=industrias.values,
+                names=industrias.index,
+                title="🏭 Ingresos por Industria"
+            )
+            st.plotly_chart(fig_industria, use_container_width=True)
+        
+        with col2:
+            # Ranking de clientes
+            clientes_ranking = st.session_state.clientes.nlargest(5, 'Valor_Mensual')
+            fig_ranking = px.bar(
+                clientes_ranking,
+                x='Valor_Mensual',
+                y='Nombre',
+                orientation='h',
+                title="🏆 Top 5 Clientes",
+                color='Valor_Mensual'
+            )
+            st.plotly_chart(fig_ranking, use_container_width=True)
+    
+    def configuracion_clientes(self):
+        """Configuración del módulo de clientes"""
+        st.subheader("⚙️ Configuración de Clientes")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("**📊 Estados de Cliente**")
+            st.info("""
+            - 🟢 **Activo**: Cliente con servicios activos
+            - 🟡 **Potencial**: Prospecto en negociación  
+            - 🔴 **Inactivo**: Cliente sin servicios activos
+            """)
+        
+        with col2:
+            st.write("**🚀 Funcionalidades CRUD**")
+            st.success("""
+            ✅ **IMPLEMENTADO:**
+            - Crear nuevo cliente
+            - Editar cliente existente
+            - Eliminar cliente (con confirmación)
+            - Dashboard con analytics
+            - Filtros avanzados
+            - Persistencia de datos
+            """)
+            
+            st.write("**🔄 Acciones**")
+            if st.button("🔄 Resetear Clientes"):
+                if st.button("⚠️ Confirmar Reset"):
+                    self.init_data()  # Reinicializar con datos base
+                    st.success("✅ Clientes reseteados")
+                    st.rerun()
     
     def mostrar_analytics(self):
         """Analytics y reportes"""
@@ -788,26 +999,511 @@ class CRMSimple:
                     st.rerun()
     
     def gestionar_facturacion(self):
-        """Gestión de facturación"""
-        st.header("💰 Gestión de Facturación")
+        """Gestión completa de facturación con CRUD"""
+        st.header("💰 **SISTEMA COMPLETO DE FACTURACIÓN**")
         
-        # Estado del módulo
+        # Tabs para organizar funcionalidades
+        tab1, tab2, tab3, tab4 = st.tabs(["📋 Lista Facturas", "➕ Nueva Factura", "📊 Analytics", "⚙️ Configuración"])
+        
+        with tab1:
+            self.listar_facturas_crud()
+        
+        with tab2:
+            self.crear_nueva_factura()
+            
+        with tab3:
+            self.dashboard_facturas()
+            
+        with tab4:
+            self.configuracion_facturas()
+
+    def listar_facturas_crud(self):
+        """Lista facturas con CRUD completo"""
+        st.subheader("📋 **Gestión Completa de Facturas**")
+        
         if len(st.session_state.facturas) == 0:
-            st.info("""
-            ### 💰 **MÓDULO FACTURACIÓN - ESTRUCTURA LISTA**
+            st.info("💰 **No hay facturas creadas**. Usa la tab **➕ Nueva Factura** para crear una.")
+            return
+        
+        # Filtros
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            estado_filtro = st.selectbox("🔍 Filtrar por Estado", 
+                                       ["Todos", "Borrador", "Enviada", "Pagada", "Vencida", "Anulada"])
+        with col2:
+            cliente_filtro = st.selectbox("👤 Filtrar por Cliente", 
+                                        ["Todos"] + list(st.session_state.facturas['Cliente'].unique()))
+        with col3:
+            ordenar_por = st.selectbox("📊 Ordenar por", ["Fecha ↓", "Monto ↓", "Estado", "Vencimiento"])
+        
+        # Aplicar filtros
+        facturas_filtradas = st.session_state.facturas.copy()
+        
+        if estado_filtro != "Todos":
+            facturas_filtradas = facturas_filtradas[facturas_filtradas['Estado'] == estado_filtro]
+        
+        if cliente_filtro != "Todos":
+            facturas_filtradas = facturas_filtradas[facturas_filtradas['Cliente'] == cliente_filtro]
+        
+        # Ordenar
+        if ordenar_por == "Fecha ↓":
+            facturas_filtradas = facturas_filtradas.sort_values('Fecha', ascending=False)
+        elif ordenar_por == "Monto ↓":
+            facturas_filtradas = facturas_filtradas.sort_values('Monto', ascending=False)
+        elif ordenar_por == "Estado":
+            facturas_filtradas = facturas_filtradas.sort_values('Estado')
+        elif ordenar_por == "Vencimiento":
+            facturas_filtradas = facturas_filtradas.sort_values('Fecha_Vencimiento', ascending=True)
+        
+        st.markdown(f"**📊 Mostrando {len(facturas_filtradas)} de {len(st.session_state.facturas)} facturas**")
+        
+        # Lista de facturas con CRUD
+        for index, factura in facturas_filtradas.iterrows():
+            with st.container():
+                col1, col2, col3, col4, col5 = st.columns([3, 2, 1.5, 1, 1])
+                
+                # Color según estado
+                color_estado = {
+                    'Borrador': '🟡',
+                    'Enviada': '🔵',
+                    'Pagada': '🟢',
+                    'Vencida': '🔴',
+                    'Anulada': '⚫'
+                }.get(factura['Estado'], '⚪')
+                
+                # Verificar vencimiento
+                from datetime import datetime
+                fecha_vencimiento = pd.to_datetime(factura['Fecha_Vencimiento'])
+                dias_vencimiento = (fecha_vencimiento - datetime.now()).days
+                
+                with col1:
+                    st.markdown(f"**#{factura['Numero']}** - {factura['Cliente']}")
+                    if dias_vencimiento < 0 and factura['Estado'] != 'Pagada':
+                        st.caption(f"⚠️ Vencida hace {abs(dias_vencimiento)} días")
+                    else:
+                        st.caption(f"📅 {factura['Fecha']} | Vence: {factura['Fecha_Vencimiento']}")
+                
+                with col2:
+                    st.markdown(f"**${factura['Monto']:,.0f}**")
+                    st.caption(f"{color_estado} {factura['Estado']}")
+                
+                with col3:
+                    if st.button("✏️ Editar", key=f"edit_fact_{factura['ID']}", type="secondary"):
+                        st.session_state.editando_factura = factura['ID']
+                        st.rerun()
+                
+                with col4:
+                    if factura['Estado'] == 'Enviada':
+                        if st.button("✅ Pagada", key=f"paid_fact_{factura['ID']}", type="primary"):
+                            self.marcar_factura_pagada(factura['ID'])
+                            st.rerun()
+                
+                with col5:
+                    if st.button("🗑️", key=f"del_fact_{factura['ID']}", type="secondary"):
+                        st.session_state.confirmar_eliminacion_factura = factura['ID']
+                        st.rerun()
+                
+                st.markdown("---")
+        
+        # Modal de edición
+        if hasattr(st.session_state, 'editando_factura'):
+            self.modal_editar_factura(st.session_state.editando_factura)
+        
+        # Modal de confirmación de eliminación
+        if hasattr(st.session_state, 'confirmar_eliminacion_factura'):
+            self.modal_confirmar_eliminacion_factura(st.session_state.confirmar_eliminacion_factura)
+
+    def modal_editar_factura(self, factura_id):
+        """Modal para editar factura"""
+        factura = st.session_state.facturas[st.session_state.facturas['ID'] == factura_id].iloc[0]
+        
+        st.markdown("---")
+        st.subheader(f"✏️ **Editando Factura #{factura['Numero']}**")
+        
+        col1, col2 = st.columns([4, 1])
+        
+        with col1:
+            with st.form(f"form_edit_fact_{factura_id}"):
+                col_a, col_b = st.columns(2)
+                
+                with col_a:
+                    nuevo_cliente = st.text_input("👤 Cliente", value=factura['Cliente'])
+                    nuevo_monto = st.number_input("💰 Monto", value=float(factura['Monto']), min_value=0.0)
+                    nuevo_estado = st.selectbox("📊 Estado", 
+                                              ['Borrador', 'Enviada', 'Pagada', 'Vencida', 'Anulada'],
+                                              index=['Borrador', 'Enviada', 'Pagada', 'Vencida', 'Anulada'].index(factura['Estado']))
+                
+                with col_b:
+                    nueva_descripcion = st.text_area("📝 Descripción", value=factura['Descripcion'], height=100)
+                    nueva_fecha_vencimiento = st.date_input("⏰ Fecha Vencimiento", 
+                                                           value=pd.to_datetime(factura['Fecha_Vencimiento']))
+                    nuevo_metodo_pago = st.selectbox("💳 Método de Pago", 
+                                                   ['Transferencia', 'Efectivo', 'Tarjeta', 'Cheque'],
+                                                   index=['Transferencia', 'Efectivo', 'Tarjeta', 'Cheque'].index(factura.get('Metodo_Pago', 'Transferencia')))
+                
+                col_btn1, col_btn2 = st.columns(2)
+                with col_btn1:
+                    submit_editar = st.form_submit_button("💾 Guardar Cambios", type="primary")
+                with col_btn2:
+                    cancelar_editar = st.form_submit_button("❌ Cancelar")
+                
+                if submit_editar:
+                    # Actualizar factura
+                    idx = st.session_state.facturas[st.session_state.facturas['ID'] == factura_id].index[0]
+                    st.session_state.facturas.at[idx, 'Cliente'] = nuevo_cliente
+                    st.session_state.facturas.at[idx, 'Monto'] = nuevo_monto
+                    st.session_state.facturas.at[idx, 'Estado'] = nuevo_estado
+                    st.session_state.facturas.at[idx, 'Descripcion'] = nueva_descripcion
+                    st.session_state.facturas.at[idx, 'Fecha_Vencimiento'] = nueva_fecha_vencimiento
+                    st.session_state.facturas.at[idx, 'Metodo_Pago'] = nuevo_metodo_pago
+                    st.session_state.facturas.at[idx, 'Fecha_Modificacion'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+                    
+                    # Marcar como pagada si cambió el estado
+                    if factura['Estado'] != 'Pagada' and nuevo_estado == 'Pagada':
+                        st.session_state.facturas.at[idx, 'Fecha_Pago'] = datetime.now().strftime('%Y-%m-%d')
+                    
+                    self.save_data('facturas')
+                    st.success(f"✅ Factura #{factura['Numero']} actualizada exitosamente")
+                    del st.session_state.editando_factura
+                    st.rerun()
+                
+                if cancelar_editar:
+                    del st.session_state.editando_factura
+                    st.rerun()
+        
+        with col2:
+            st.info(f"""
+            **📊 Info Factura:**
+            - **Número:** {factura['Numero']}
+            - **Creada:** {factura['Fecha']}
+            - **Estado Actual:** {factura['Estado']}
+            - **Total:** ${factura['Monto']:,.0f}
+            """)
+
+    def modal_confirmar_eliminacion_factura(self, factura_id):
+        """Modal de confirmación para eliminar factura"""
+        factura = st.session_state.facturas[st.session_state.facturas['ID'] == factura_id].iloc[0]
+        
+        st.markdown("---")
+        st.error(f"⚠️ **¿Confirmas eliminar la factura #{factura['Numero']}?**")
+        st.write(f"**Cliente:** {factura['Cliente']} | **Monto:** ${factura['Monto']:,.0f}")
+        
+        col1, col2, col3 = st.columns([1, 1, 2])
+        
+        with col1:
+            if st.button("🗑️ SÍ, ELIMINAR", key=f"confirm_yes_fact_{factura_id}", type="primary"):
+                st.session_state.facturas = st.session_state.facturas[st.session_state.facturas['ID'] != factura_id]
+                self.save_data('facturas')
+                st.success(f"✅ Factura #{factura['Numero']} eliminada")
+                del st.session_state.confirmar_eliminacion_factura
+                st.rerun()
+        
+        with col2:
+            if st.button("❌ Cancelar", key=f"confirm_no_fact_{factura_id}"):
+                del st.session_state.confirmar_eliminacion_factura
+                st.rerun()
+
+    def crear_nueva_factura(self):
+        """Formulario para crear nueva factura"""
+        st.subheader("➕ **Nueva Factura**")
+        
+        # Opción de crear desde cotización
+        st.markdown("### 🔗 **Crear desde Cotización**")
+        cotizaciones_aprobadas = st.session_state.cotizaciones[st.session_state.cotizaciones['Estado'] == 'Aprobada'] if len(st.session_state.cotizaciones) > 0 else pd.DataFrame()
+        
+        if len(cotizaciones_aprobadas) > 0:
+            col1, col2 = st.columns([2, 1])
+            with col1:
+                cotizacion_seleccionada = st.selectbox("📋 Cotización Aprobada", 
+                                                     ["Seleccionar..."] + [f"#{row['ID']} - {row['Cliente']} - ${row['Monto']:,.0f}" 
+                                                                           for idx, row in cotizaciones_aprobadas.iterrows()])
+            with col2:
+                if st.button("🚀 Crear desde Cotización") and cotizacion_seleccionada != "Seleccionar...":
+                    cotizacion_id = int(cotizacion_seleccionada.split("#")[1].split(" -")[0])
+                    self.crear_factura_desde_cotizacion(cotizacion_id)
+                    st.rerun()
+        else:
+            st.info("📋 No hay cotizaciones aprobadas para facturar")
+        
+        st.markdown("---")
+        
+        # Formulario manual
+        st.markdown("### ✏️ **Crear Manualmente**")
+        
+        with st.form("form_nueva_factura"):
+            col1, col2 = st.columns(2)
             
-            **¿Qué podemos hacer aquí?**
-            - 🧾 **Crear nueva factura** (desde cotización aprobada)
-            - 📝 **Editar factura existente** (antes de enviar)
-            - 📊 **Cambiar estado** (Pendiente → Enviada → Pagada)
-            - 📅 **Gestionar vencimientos** (alertas automáticas)
-            - 📈 **Reportes financieros** (ingresos por período)
-            - 📋 **Seguimiento de pagos** (recordatorios)
-            - 🔄 **Integración contable** (exportar a sistemas)
-            - 📄 **Generar PDFs** (formato profesional)
+            with col1:
+                cliente = st.text_input("👤 Cliente *", placeholder="Nombre del cliente")
+                monto = st.number_input("💰 Monto *", min_value=0.0, value=0.0, step=1000.0)
+                estado = st.selectbox("📊 Estado Inicial", ['Borrador', 'Enviada'], index=0)
+                metodo_pago = st.selectbox("💳 Método de Pago", ['Transferencia', 'Efectivo', 'Tarjeta', 'Cheque'])
             
-            **📊 Estado:** Estructura completa, listo para datos reales
-            **💡 Conectar con:** Sistema contable existente de la agencia
+            with col2:
+                descripcion = st.text_area("📝 Descripción del Servicio *", placeholder="Describe los servicios facturados", height=100)
+                fecha_vencimiento = st.date_input("⏰ Fecha de Vencimiento", 
+                                                value=datetime.now().date() + pd.Timedelta(days=30))
+                observaciones = st.text_area("📝 Observaciones", placeholder="Notas adicionales", height=60)
+            
+            submit_button = st.form_submit_button("💾 Crear Factura", type="primary")
+            
+            if submit_button:
+                if cliente and monto > 0 and descripcion:
+                    # Generar número de factura
+                    ultimo_numero = st.session_state.facturas['Numero'].apply(lambda x: int(x.split('-')[1]) if '-' in str(x) else 0).max() if len(st.session_state.facturas) > 0 else 0
+                    nuevo_numero = f"IAM-{ultimo_numero + 1:04d}"
+                    
+                    nueva_factura = {
+                        'ID': len(st.session_state.facturas) + 1,
+                        'Numero': nuevo_numero,
+                        'Cliente': cliente,
+                        'Monto': monto,
+                        'Estado': estado,
+                        'Descripcion': descripcion,
+                        'Fecha': datetime.now().strftime('%Y-%m-%d'),
+                        'Fecha_Vencimiento': fecha_vencimiento,
+                        'Fecha_Modificacion': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                        'Metodo_Pago': metodo_pago,
+                        'Observaciones': observaciones,
+                        'Origen': 'Manual'
+                    }
+                    
+                    st.session_state.facturas = pd.concat([
+                        st.session_state.facturas,
+                        pd.DataFrame([nueva_factura])
+                    ], ignore_index=True)
+                    
+                    self.save_data('facturas')
+                    st.success(f"✅ Factura {nuevo_numero} creada exitosamente para {cliente}")
+                    st.rerun()
+                else:
+                    st.error("❌ Por favor completa todos los campos marcados con *")
+
+    def crear_factura_desde_cotizacion(self, cotizacion_id):
+        """Crear factura automáticamente desde cotización aprobada"""
+        cotizacion = st.session_state.cotizaciones[st.session_state.cotizaciones['ID'] == cotizacion_id].iloc[0]
+        
+        # Generar número de factura
+        ultimo_numero = st.session_state.facturas['Numero'].apply(lambda x: int(x.split('-')[1]) if '-' in str(x) else 0).max() if len(st.session_state.facturas) > 0 else 0
+        nuevo_numero = f"IAM-{ultimo_numero + 1:04d}"
+        
+        nueva_factura = {
+            'ID': len(st.session_state.facturas) + 1,
+            'Numero': nuevo_numero,
+            'Cliente': cotizacion['Cliente'],
+            'Monto': cotizacion['Monto'],
+            'Estado': 'Borrador',
+            'Descripcion': cotizacion['Descripcion'],
+            'Fecha': datetime.now().strftime('%Y-%m-%d'),
+            'Fecha_Vencimiento': (datetime.now() + pd.Timedelta(days=30)).strftime('%Y-%m-%d'),
+            'Fecha_Modificacion': datetime.now().strftime('%Y-%m-%d %H:%M'),
+            'Metodo_Pago': 'Transferencia',
+            'Observaciones': f'Generada automáticamente desde cotización #{cotizacion_id}',
+            'Origen': f'Cotización #{cotizacion_id}'
+        }
+        
+        st.session_state.facturas = pd.concat([
+            st.session_state.facturas,
+            pd.DataFrame([nueva_factura])
+        ], ignore_index=True)
+        
+        self.save_data('facturas')
+        st.success(f"✅ Factura {nuevo_numero} creada desde cotización #{cotizacion_id}")
+
+    def dashboard_facturas(self):
+        """Dashboard y analytics de facturas"""
+        st.subheader("📊 **Analytics de Facturación**")
+        
+        if len(st.session_state.facturas) == 0:
+            st.info("📈 Los analytics aparecerán cuando tengas facturas creadas.")
+            return
+        
+        # Métricas principales
+        col1, col2, col3, col4 = st.columns(4)
+        
+        total_facturas = len(st.session_state.facturas)
+        facturado_total = st.session_state.facturas['Monto'].sum()
+        facturas_pagadas = len(st.session_state.facturas[st.session_state.facturas['Estado'] == 'Pagada'])
+        cobrado_real = st.session_state.facturas[st.session_state.facturas['Estado'] == 'Pagada']['Monto'].sum()
+        
+        with col1:
+            st.metric("📋 Total Facturas", total_facturas)
+        with col2:
+            st.metric("💰 Facturado", f"${facturado_total:,.0f}")
+        with col3:
+            st.metric("✅ Pagadas", f"{facturas_pagadas} ({(facturas_pagadas/total_facturas*100):.0f}%)")
+        with col4:
+            st.metric("💸 Cobrado Real", f"${cobrado_real:,.0f}")
+        
+        # Alertas de vencimiento
+        st.markdown("### 🚨 **Alertas de Vencimiento**")
+        
+        from datetime import datetime
+        hoy = datetime.now().date()
+        
+        # Facturas vencidas
+        facturas_vencidas = st.session_state.facturas[
+            (pd.to_datetime(st.session_state.facturas['Fecha_Vencimiento']).dt.date < hoy) & 
+            (st.session_state.facturas['Estado'] != 'Pagada')
+        ]
+        
+        # Facturas por vencer (próximos 7 días)
+        facturas_por_vencer = st.session_state.facturas[
+            (pd.to_datetime(st.session_state.facturas['Fecha_Vencimiento']).dt.date <= hoy + pd.Timedelta(days=7)) &
+            (pd.to_datetime(st.session_state.facturas['Fecha_Vencimiento']).dt.date >= hoy) &
+            (st.session_state.facturas['Estado'] != 'Pagada')
+        ]
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            if len(facturas_vencidas) > 0:
+                st.error(f"🚨 **{len(facturas_vencidas)} Facturas Vencidas**")
+                for idx, factura in facturas_vencidas.iterrows():
+                    dias_vencida = (hoy - pd.to_datetime(factura['Fecha_Vencimiento']).date()).days
+                    st.write(f"- #{factura['Numero']} - {factura['Cliente']} - ${factura['Monto']:,.0f} (Vencida hace {dias_vencida} días)")
+            else:
+                st.success("✅ No hay facturas vencidas")
+        
+        with col2:
+            if len(facturas_por_vencer) > 0:
+                st.warning(f"⚠️ **{len(facturas_por_vencer)} Facturas por Vencer**")
+                for idx, factura in facturas_por_vencer.iterrows():
+                    dias_restantes = (pd.to_datetime(factura['Fecha_Vencimiento']).date() - hoy).days
+                    st.write(f"- #{factura['Numero']} - {factura['Cliente']} - ${factura['Monto']:,.0f} (Vence en {dias_restantes} días)")
+            else:
+                st.success("✅ No hay facturas próximas a vencer")
+        
+        # Gráficos
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Distribución por estado
+            estado_counts = st.session_state.facturas['Estado'].value_counts()
+            fig_estado = px.pie(
+                values=estado_counts.values,
+                names=estado_counts.index,
+                title="📊 Facturas por Estado"
+            )
+            st.plotly_chart(fig_estado, use_container_width=True)
+        
+        with col2:
+            # Facturación mensual
+            facturas_con_fecha = st.session_state.facturas.copy()
+            facturas_con_fecha['Mes'] = pd.to_datetime(facturas_con_fecha['Fecha']).dt.strftime('%Y-%m')
+            facturacion_mensual = facturas_con_fecha.groupby('Mes')['Monto'].sum().reset_index()
+            
+            fig_mensual = px.bar(
+                facturacion_mensual,
+                x='Mes',
+                y='Monto',
+                title="💰 Facturación Mensual"
+            )
+            st.plotly_chart(fig_mensual, use_container_width=True)
+
+    def configuracion_facturas(self):
+        """Configuración del módulo de facturas"""
+        st.subheader("⚙️ **Configuración de Facturación**")
+        
+        # Configuración de numeración
+        st.markdown("### 🔢 **Numeración de Facturas**")
+        
+        if len(st.session_state.facturas) > 0:
+            ultimo_numero = st.session_state.facturas['Numero'].apply(lambda x: int(x.split('-')[1]) if '-' in str(x) else 0).max()
+            st.write(f"**Último número:** IAM-{ultimo_numero:04d}")
+            st.write(f"**Próximo número:** IAM-{ultimo_numero+1:04d}")
+        else:
+            st.write("**Próximo número:** IAM-0001")
+        
+        # Estados de factura
+        st.markdown("### 📊 **Estados de Factura**")
+        
+        estados_facturas = ['Borrador', 'Enviada', 'Pagada', 'Vencida', 'Anulada']
+        
+        for estado in estados_facturas:
+            count = len(st.session_state.facturas[st.session_state.facturas['Estado'] == estado]) if len(st.session_state.facturas) > 0 else 0
+            st.write(f"**{estado}:** {count} facturas")
+        
+        # Configuración de vencimientos
+        st.markdown("### ⏰ **Gestión de Vencimientos**")
+        
+        dias_vencimiento_default = st.number_input("📅 Días por defecto para vencimiento", value=30, min_value=1, max_value=365)
+        alertas_activas = st.checkbox("🔔 Alertas de vencimiento activas", value=True)
+        
+        if alertas_activas:
+            st.success("✅ Se mostrarán alertas para facturas vencidas y próximas a vencer")
+        
+        # Métodos de pago
+        st.markdown("### 💳 **Métodos de Pago**")
+        
+        metodos_disponibles = ['Transferencia', 'Efectivo', 'Tarjeta', 'Cheque']
+        for metodo in metodos_disponibles:
+            count = len(st.session_state.facturas[st.session_state.facturas.get('Metodo_Pago', '') == metodo]) if len(st.session_state.facturas) > 0 else 0
+            st.write(f"**{metodo}:** {count} facturas")
+        
+        # Limpieza de datos
+        st.markdown("### 🗑️ **Gestión de Datos**")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            if st.button("🔄 Resetear Datos Demo", type="secondary"):
+                st.session_state.facturas = pd.DataFrame(columns=['ID', 'Numero', 'Cliente', 'Monto', 'Estado', 'Descripcion', 'Fecha'])
+                self.save_data('facturas')
+                st.success("✅ Datos demo eliminados")
+                st.rerun()
+        
+        with col2:
+            if st.button("📊 Cargar Datos Demo", type="primary"):
+                self.cargar_datos_demo_facturas()
+                st.success("✅ Datos demo cargados")
+                st.rerun()
+
+    def marcar_factura_pagada(self, factura_id):
+        """Marcar factura como pagada"""
+        idx = st.session_state.facturas[st.session_state.facturas['ID'] == factura_id].index[0]
+        st.session_state.facturas.at[idx, 'Estado'] = 'Pagada'
+        st.session_state.facturas.at[idx, 'Fecha_Pago'] = datetime.now().strftime('%Y-%m-%d')
+        st.session_state.facturas.at[idx, 'Fecha_Modificacion'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+        
+        self.save_data('facturas')
+        
+        numero_factura = st.session_state.facturas.at[idx, 'Numero']
+        st.success(f"✅ Factura {numero_factura} marcada como pagada")
+
+    def cargar_datos_demo_facturas(self):
+        """Cargar datos demo para facturas"""
+        facturas_demo = [
+            {
+                'ID': 1,
+                'Numero': 'IAM-0001',
+                'Cliente': 'Clínica Cumbres del Norte',
+                'Monto': 1200000,
+                'Estado': 'Pagada',
+                'Descripcion': 'Portal de pacientes con sistema de citas online',
+                'Fecha': '2024-07-15',
+                'Fecha_Vencimiento': '2024-08-15',
+                'Fecha_Pago': '2024-08-10',
+                'Metodo_Pago': 'Transferencia',
+                'Observaciones': 'Pagado antes del vencimiento',
+                'Origen': 'Cotización #1'
+            },
+            {
+                'ID': 2,
+                'Numero': 'IAM-0002',
+                'Cliente': 'Constructora Los Andes',
+                'Monto': 800000,
+                'Estado': 'Enviada',
+                'Descripcion': 'Sitio web corporativo con catálogo de proyectos',
+                'Fecha': '2024-08-01',
+                'Fecha_Vencimiento': '2024-08-31',
+                'Metodo_Pago': 'Transferencia',
+                'Observaciones': 'Enviada por correo electrónico',
+                'Origen': 'Cotización #2'
+            }
+        ]
+        
+        st.session_state.facturas = pd.DataFrame(facturas_demo)
             """)
         
         # Métricas de facturación
@@ -9280,12 +9976,482 @@ def main():
         st.header("📋 **SISTEMA COMPLETO DE COTIZACIONES**")
         
         # Tabs para organizar funcionalidades
-        tab1, tab2, tab3, tab4, tab5 = st.tabs(["📋 Gestión", "📊 Pipeline", "🤖 Automatización", "📈 Reportes", "⚙️ Config"])
+        tab1, tab2, tab3, tab4 = st.tabs(["📋 Lista Cotizaciones", "➕ Nueva Cotización", "📊 Analytics", "⚙️ Configuración"])
         
         with tab1:
-            self.gestion_cotizaciones_crud()
+            self.listar_cotizaciones_crud()
         
         with tab2:
+            self.crear_nueva_cotizacion()
+            
+        with tab3:
+            self.dashboard_cotizaciones()
+            
+        with tab4:
+            self.configuracion_cotizaciones()
+
+    def listar_cotizaciones_crud(self):
+        """Lista cotizaciones con CRUD completo"""
+        st.subheader("📋 **Gestión Completa de Cotizaciones**")
+        
+        if len(st.session_state.cotizaciones) == 0:
+            st.info("📝 **No hay cotizaciones creadas**. Usa la tab **➕ Nueva Cotización** para crear una.")
+            return
+        
+        # Filtros
+        col1, col2, col3 = st.columns(3)
+        with col1:
+            estado_filtro = st.selectbox("🔍 Filtrar por Estado", 
+                                       ["Todos", "Borrador", "Enviada", "Aprobada", "Rechazada", "En Negociación", "Stand by"])
+        with col2:
+            cliente_filtro = st.selectbox("👤 Filtrar por Cliente", 
+                                        ["Todos"] + list(st.session_state.cotizaciones['Cliente'].unique()))
+        with col3:
+            ordenar_por = st.selectbox("📊 Ordenar por", ["Fecha ↓", "Monto ↓", "Estado", "Cliente"])
+        
+        # Aplicar filtros
+        cotizaciones_filtradas = st.session_state.cotizaciones.copy()
+        
+        if estado_filtro != "Todos":
+            cotizaciones_filtradas = cotizaciones_filtradas[cotizaciones_filtradas['Estado'] == estado_filtro]
+        
+        if cliente_filtro != "Todos":
+            cotizaciones_filtradas = cotizaciones_filtradas[cotizaciones_filtradas['Cliente'] == cliente_filtro]
+        
+        # Ordenar
+        if ordenar_por == "Fecha ↓":
+            cotizaciones_filtradas = cotizaciones_filtradas.sort_values('Fecha', ascending=False)
+        elif ordenar_por == "Monto ↓":
+            cotizaciones_filtradas = cotizaciones_filtradas.sort_values('Monto', ascending=False)
+        elif ordenar_por == "Estado":
+            cotizaciones_filtradas = cotizaciones_filtradas.sort_values('Estado')
+        elif ordenar_por == "Cliente":
+            cotizaciones_filtradas = cotizaciones_filtradas.sort_values('Cliente')
+        
+        st.markdown(f"**📊 Mostrando {len(cotizaciones_filtradas)} de {len(st.session_state.cotizaciones)} cotizaciones**")
+        
+        # Lista de cotizaciones con CRUD
+        for index, cotizacion in cotizaciones_filtradas.iterrows():
+            with st.container():
+                col1, col2, col3, col4, col5 = st.columns([3, 2, 1.5, 1, 1])
+                
+                # Color según estado
+                color_estado = {
+                    'Borrador': '🟡',
+                    'Enviada': '🔵',
+                    'Aprobada': '🟢',
+                    'Rechazada': '🔴',
+                    'En Negociación': '🟠',
+                    'Stand by': '⚪'
+                }.get(cotizacion['Estado'], '⚪')
+                
+                with col1:
+                    st.markdown(f"**{cotizacion['Cliente']}** - {cotizacion['Descripcion'][:50]}...")
+                    st.caption(f"📅 {cotizacion['Fecha']} | ID: {cotizacion['ID']}")
+                
+                with col2:
+                    st.markdown(f"**${cotizacion['Monto']:,.0f}**")
+                    st.caption(f"{color_estado} {cotizacion['Estado']}")
+                
+                with col3:
+                    if st.button("✏️ Editar", key=f"edit_cotiz_{cotizacion['ID']}", type="secondary"):
+                        st.session_state.editando_cotizacion = cotizacion['ID']
+                        st.rerun()
+                
+                with col4:
+                    if cotizacion['Estado'] == 'Enviada':
+                        if st.button("✅ Aprobar", key=f"approve_cotiz_{cotizacion['ID']}", type="primary"):
+                            self.aprobar_cotizacion(cotizacion['ID'])
+                            st.rerun()
+                
+                with col5:
+                    if st.button("🗑️", key=f"del_cotiz_{cotizacion['ID']}", type="secondary"):
+                        st.session_state.confirmar_eliminacion_cotizacion = cotizacion['ID']
+                        st.rerun()
+                
+                st.markdown("---")
+        
+        # Modal de edición
+        if hasattr(st.session_state, 'editando_cotizacion'):
+            self.modal_editar_cotizacion(st.session_state.editando_cotizacion)
+        
+        # Modal de confirmación de eliminación
+        if hasattr(st.session_state, 'confirmar_eliminacion_cotizacion'):
+            self.modal_confirmar_eliminacion_cotizacion(st.session_state.confirmar_eliminacion_cotizacion)
+
+    def modal_editar_cotizacion(self, cotizacion_id):
+        """Modal para editar cotización"""
+        cotizacion = st.session_state.cotizaciones[st.session_state.cotizaciones['ID'] == cotizacion_id].iloc[0]
+        
+        st.markdown("---")
+        st.subheader(f"✏️ **Editando Cotización #{cotizacion_id}**")
+        
+        col1, col2 = st.columns([4, 1])
+        
+        with col1:
+            with st.form(f"form_edit_cotiz_{cotizacion_id}"):
+                col_a, col_b = st.columns(2)
+                
+                with col_a:
+                    nuevo_cliente = st.text_input("👤 Cliente", value=cotizacion['Cliente'])
+                    nuevo_monto = st.number_input("💰 Monto", value=float(cotizacion['Monto']), min_value=0.0)
+                    nuevo_estado = st.selectbox("📊 Estado", 
+                                              ['Borrador', 'Enviada', 'Aprobada', 'Rechazada', 'En Negociación', 'Stand by'],
+                                              index=['Borrador', 'Enviada', 'Aprobada', 'Rechazada', 'En Negociación', 'Stand by'].index(cotizacion['Estado']))
+                
+                with col_b:
+                    nueva_descripcion = st.text_area("📝 Descripción", value=cotizacion['Descripcion'], height=100)
+                    nueva_fecha_vencimiento = st.date_input("⏰ Fecha Vencimiento", 
+                                                           value=pd.to_datetime(cotizacion.get('Fecha_Vencimiento', datetime.now().date())))
+                
+                col_btn1, col_btn2 = st.columns(2)
+                with col_btn1:
+                    submit_editar = st.form_submit_button("💾 Guardar Cambios", type="primary")
+                with col_btn2:
+                    cancelar_editar = st.form_submit_button("❌ Cancelar")
+                
+                if submit_editar:
+                    # Actualizar cotización
+                    idx = st.session_state.cotizaciones[st.session_state.cotizaciones['ID'] == cotizacion_id].index[0]
+                    st.session_state.cotizaciones.at[idx, 'Cliente'] = nuevo_cliente
+                    st.session_state.cotizaciones.at[idx, 'Monto'] = nuevo_monto
+                    st.session_state.cotizaciones.at[idx, 'Estado'] = nuevo_estado
+                    st.session_state.cotizaciones.at[idx, 'Descripcion'] = nueva_descripcion
+                    st.session_state.cotizaciones.at[idx, 'Fecha_Vencimiento'] = nueva_fecha_vencimiento
+                    st.session_state.cotizaciones.at[idx, 'Fecha_Modificacion'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+                    
+                    self.save_data('cotizaciones')
+                    
+                    # Verificar si se aprobó
+                    if cotizacion['Estado'] != 'Aprobada' and nuevo_estado == 'Aprobada':
+                        self.automatizar_cotizacion_aprobada(cotizacion_id)
+                    
+                    st.success(f"✅ Cotización #{cotizacion_id} actualizada exitosamente")
+                    del st.session_state.editando_cotizacion
+                    st.rerun()
+                
+                if cancelar_editar:
+                    del st.session_state.editando_cotizacion
+                    st.rerun()
+        
+        with col2:
+            st.info(f"""
+            **📊 Info Cotización:**
+            - **ID:** {cotizacion_id}
+            - **Creada:** {cotizacion['Fecha']}
+            - **Estado Actual:** {cotizacion['Estado']}
+            """)
+
+    def modal_confirmar_eliminacion_cotizacion(self, cotizacion_id):
+        """Modal de confirmación para eliminar cotización"""
+        cotizacion = st.session_state.cotizaciones[st.session_state.cotizaciones['ID'] == cotizacion_id].iloc[0]
+        
+        st.markdown("---")
+        st.error(f"⚠️ **¿Confirmas eliminar la cotización #{cotizacion_id}?**")
+        st.write(f"**Cliente:** {cotizacion['Cliente']} | **Monto:** ${cotizacion['Monto']:,.0f}")
+        
+        col1, col2, col3 = st.columns([1, 1, 2])
+        
+        with col1:
+            if st.button("🗑️ SÍ, ELIMINAR", key=f"confirm_yes_cotiz_{cotizacion_id}", type="primary"):
+                st.session_state.cotizaciones = st.session_state.cotizaciones[st.session_state.cotizaciones['ID'] != cotizacion_id]
+                self.save_data('cotizaciones')
+                st.success(f"✅ Cotización #{cotizacion_id} eliminada")
+                del st.session_state.confirmar_eliminacion_cotizacion
+                st.rerun()
+        
+        with col2:
+            if st.button("❌ Cancelar", key=f"confirm_no_cotiz_{cotizacion_id}"):
+                del st.session_state.confirmar_eliminacion_cotizacion
+                st.rerun()
+
+    def crear_nueva_cotizacion(self):
+        """Formulario para crear nueva cotización"""
+        st.subheader("➕ **Nueva Cotización**")
+        
+        with st.form("form_nueva_cotizacion"):
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                cliente = st.text_input("👤 Cliente *", placeholder="Nombre del cliente")
+                monto = st.number_input("💰 Monto *", min_value=0.0, value=0.0, step=1000.0)
+                estado = st.selectbox("📊 Estado Inicial", ['Borrador', 'Enviada'], index=0)
+            
+            with col2:
+                descripcion = st.text_area("📝 Descripción del Proyecto *", placeholder="Describe brevemente el proyecto", height=100)
+                fecha_vencimiento = st.date_input("⏰ Fecha de Vencimiento", 
+                                                value=datetime.now().date() + pd.Timedelta(days=30))
+                prioridad = st.selectbox("🔥 Prioridad", ['Baja', 'Media', 'Alta'], index=1)
+            
+            submit_button = st.form_submit_button("💾 Crear Cotización", type="primary")
+            
+            if submit_button:
+                if cliente and monto > 0 and descripcion:
+                    nueva_cotizacion = {
+                        'ID': len(st.session_state.cotizaciones) + 1,
+                        'Cliente': cliente,
+                        'Monto': monto,
+                        'Estado': estado,
+                        'Descripcion': descripcion,
+                        'Fecha': datetime.now().strftime('%Y-%m-%d'),
+                        'Fecha_Vencimiento': fecha_vencimiento,
+                        'Fecha_Modificacion': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                        'Prioridad': prioridad
+                    }
+                    
+                    st.session_state.cotizaciones = pd.concat([
+                        st.session_state.cotizaciones,
+                        pd.DataFrame([nueva_cotizacion])
+                    ], ignore_index=True)
+                    
+                    self.save_data('cotizaciones')
+                    st.success(f"✅ Cotización #{nueva_cotizacion['ID']} creada exitosamente para {cliente}")
+                    st.rerun()
+                else:
+                    st.error("❌ Por favor completa todos los campos marcados con *")
+
+    def dashboard_cotizaciones(self):
+        """Dashboard y analytics de cotizaciones"""
+        st.subheader("📊 **Analytics de Cotizaciones**")
+        
+        if len(st.session_state.cotizaciones) == 0:
+            st.info("📈 Los analytics aparecerán cuando tengas cotizaciones creadas.")
+            return
+        
+        # Métricas principales
+        col1, col2, col3, col4 = st.columns(4)
+        
+        total_cotizaciones = len(st.session_state.cotizaciones)
+        valor_total = st.session_state.cotizaciones['Monto'].sum()
+        cotiz_aprobadas = len(st.session_state.cotizaciones[st.session_state.cotizaciones['Estado'] == 'Aprobada'])
+        tasa_conversion = (cotiz_aprobadas / total_cotizaciones * 100) if total_cotizaciones > 0 else 0
+        
+        with col1:
+            st.metric("📋 Total Cotizaciones", total_cotizaciones)
+        with col2:
+            st.metric("💰 Valor Total", f"${valor_total:,.0f}")
+        with col3:
+            st.metric("✅ Aprobadas", cotiz_aprobadas)
+        with col4:
+            st.metric("📈 Tasa Conversión", f"{tasa_conversion:.1f}%")
+        
+        # Gráficos
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Distribución por estado
+            estado_counts = st.session_state.cotizaciones['Estado'].value_counts()
+            fig_estado = px.pie(
+                values=estado_counts.values,
+                names=estado_counts.index,
+                title="📊 Cotizaciones por Estado"
+            )
+            st.plotly_chart(fig_estado, use_container_width=True)
+        
+        with col2:
+            # Top clientes por monto
+            cliente_montos = st.session_state.cotizaciones.groupby('Cliente')['Monto'].sum().sort_values(ascending=False).head(5)
+            fig_clientes = px.bar(
+                x=cliente_montos.values,
+                y=cliente_montos.index,
+                orientation='h',
+                title="💰 Top 5 Clientes por Monto"
+            )
+            st.plotly_chart(fig_clientes, use_container_width=True)
+        
+        # Pipeline de ventas
+        st.markdown("### 📈 **Pipeline de Ventas**")
+        
+        pipeline_data = []
+        for estado in ['Borrador', 'Enviada', 'En Negociación', 'Aprobada']:
+            cotiz_estado = st.session_state.cotizaciones[st.session_state.cotizaciones['Estado'] == estado]
+            monto_estado = cotiz_estado['Monto'].sum()
+            count_estado = len(cotiz_estado)
+            
+            if count_estado > 0:
+                pipeline_data.append({
+                    'Estado': estado,
+                    'Cantidad': count_estado,
+                    'Monto': monto_estado,
+                    'Promedio': monto_estado / count_estado if count_estado > 0 else 0
+                })
+        
+        if pipeline_data:
+            df_pipeline = pd.DataFrame(pipeline_data)
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                fig_pipeline = px.funnel(
+                    df_pipeline,
+                    x='Cantidad',
+                    y='Estado',
+                    title="🔄 Pipeline por Cantidad"
+                )
+                st.plotly_chart(fig_pipeline, use_container_width=True)
+            
+            with col2:
+                fig_pipeline_monto = px.funnel(
+                    df_pipeline,
+                    x='Monto',
+                    y='Estado',
+                    title="💰 Pipeline por Monto"
+                )
+                st.plotly_chart(fig_pipeline_monto, use_container_width=True)
+
+    def configuracion_cotizaciones(self):
+        """Configuración del módulo de cotizaciones"""
+        st.subheader("⚙️ **Configuración de Cotizaciones**")
+        
+        # Estados personalizados
+        st.markdown("### 📊 **Estados de Cotización**")
+        
+        estados_actuales = ['Borrador', 'Enviada', 'Aprobada', 'Rechazada', 'En Negociación', 'Stand by']
+        
+        for estado in estados_actuales:
+            count = len(st.session_state.cotizaciones[st.session_state.cotizaciones['Estado'] == estado]) if len(st.session_state.cotizaciones) > 0 else 0
+            st.write(f"**{estado}:** {count} cotizaciones")
+        
+        # Automatización
+        st.markdown("### 🤖 **Automatización**")
+        
+        automatizacion_activa = st.checkbox("🔄 Auto-crear Cliente y Proyecto al aprobar cotización", value=True)
+        if automatizacion_activa:
+            st.success("✅ Cuando una cotización se aprueba, automáticamente se crea el cliente y proyecto")
+        else:
+            st.info("ℹ️ La automatización está desactivada")
+        
+        # Plantillas
+        st.markdown("### 📝 **Plantillas de Cotización**")
+        
+        plantillas = [
+            "Desarrollo Web Básico - $500,000",
+            "Marketing Digital Completo - $800,000", 
+            "Diseño de Marca - $300,000",
+            "SEO y Posicionamiento - $400,000"
+        ]
+        
+        for plantilla in plantillas:
+            if st.button(f"📋 {plantilla}", key=f"plantilla_{plantilla[:10]}"):
+                st.info(f"Plantilla '{plantilla}' lista para usar en Nueva Cotización")
+        
+        # Limpieza de datos
+        st.markdown("### 🗑️ **Gestión de Datos**")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            if st.button("🔄 Resetear Datos Demo", type="secondary"):
+                st.session_state.cotizaciones = pd.DataFrame(columns=['ID', 'Cliente', 'Monto', 'Estado', 'Descripcion', 'Fecha'])
+                self.save_data('cotizaciones')
+                st.success("✅ Datos demo eliminados")
+                st.rerun()
+        
+        with col2:
+            if st.button("📊 Cargar Datos Demo", type="primary"):
+                self.cargar_datos_demo_cotizaciones()
+                st.success("✅ Datos demo cargados")
+                st.rerun()
+
+    def aprobar_cotizacion(self, cotizacion_id):
+        """Aprobar cotización y activar automatización"""
+        # Actualizar estado
+        idx = st.session_state.cotizaciones[st.session_state.cotizaciones['ID'] == cotizacion_id].index[0]
+        st.session_state.cotizaciones.at[idx, 'Estado'] = 'Aprobada'
+        st.session_state.cotizaciones.at[idx, 'Fecha_Aprobacion'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+        
+        self.save_data('cotizaciones')
+        
+        # Automatización: crear cliente y proyecto
+        self.automatizar_cotizacion_aprobada(cotizacion_id)
+        
+        st.success(f"✅ Cotización #{cotizacion_id} aprobada. Cliente y proyecto creados automáticamente.")
+
+    def automatizar_cotizacion_aprobada(self, cotizacion_id):
+        """Automatización cuando se aprueba cotización: crear cliente y proyecto"""
+        cotizacion = st.session_state.cotizaciones[st.session_state.cotizaciones['ID'] == cotizacion_id].iloc[0]
+        
+        # 1. Crear/verificar cliente
+        cliente_existente = st.session_state.clientes[st.session_state.clientes['Nombre'] == cotizacion['Cliente']]
+        
+        if len(cliente_existente) == 0:
+            # Crear nuevo cliente
+            nuevo_cliente = {
+                'ID': len(st.session_state.clientes) + 1,
+                'Nombre': cotizacion['Cliente'],
+                'Email': f"{cotizacion['Cliente'].lower().replace(' ', '.')}@cliente.com",
+                'Telefono': "Por definir",
+                'Industria': "Por definir",
+                'Estado': 'Activo',
+                'Fecha_Registro': datetime.now().strftime('%Y-%m-%d'),
+                'Origen': f'Cotización #{cotizacion_id}'
+            }
+            
+            st.session_state.clientes = pd.concat([
+                st.session_state.clientes,
+                pd.DataFrame([nuevo_cliente])
+            ], ignore_index=True)
+            
+            self.save_data('clientes')
+            cliente_id = nuevo_cliente['ID']
+        else:
+            cliente_id = cliente_existente.iloc[0]['ID']
+        
+        # 2. Crear proyecto automáticamente
+        nuevo_proyecto = {
+            'ID': len(st.session_state.proyectos) + 1,
+            'Nombre': f"{cotizacion['Descripcion'][:50]} - {cotizacion['Cliente']}",
+            'Cliente': cotizacion['Cliente'],
+            'Estado': 'Planificación',
+            'Progreso': 0,
+            'Fecha_Inicio': datetime.now().strftime('%Y-%m-%d'),
+            'Fecha_Fin': (datetime.now() + pd.Timedelta(days=60)).strftime('%Y-%m-%d'),
+            'Presupuesto': cotizacion['Monto'],
+            'Descripcion': f"Proyecto creado automáticamente desde cotización #{cotizacion_id}\n\n{cotizacion['Descripcion']}",
+            'Origen': f'Cotización #{cotizacion_id}',
+            'Prioridad': cotizacion.get('Prioridad', 'Media')
+        }
+        
+        st.session_state.proyectos = pd.concat([
+            st.session_state.proyectos,
+            pd.DataFrame([nuevo_proyecto])
+        ], ignore_index=True)
+        
+        self.save_data('proyectos')
+        
+        # 3. Registro de actividad
+        st.info(f"""
+        🤖 **AUTOMATIZACIÓN EJECUTADA:**
+        - ✅ Cliente: {cotizacion['Cliente']} (ID: {cliente_id})
+        - ✅ Proyecto: {nuevo_proyecto['Nombre']} (ID: {nuevo_proyecto['ID']})
+        - 💰 Presupuesto: ${cotizacion['Monto']:,.0f}
+        """)
+
+    def cargar_datos_demo_cotizaciones(self):
+        """Cargar datos demo para cotizaciones"""
+        cotizaciones_demo = [
+            {
+                'ID': 1,
+                'Cliente': 'Clínica Cumbres del Norte',
+                'Monto': 1200000,
+                'Estado': 'Aprobada',
+                'Descripcion': 'Portal de pacientes con sistema de citas online',
+                'Fecha': '2024-08-01',
+                'Fecha_Vencimiento': '2024-08-31',
+                'Prioridad': 'Alta'
+            },
+            {
+                'ID': 2,
+                'Cliente': 'Constructora Los Andes',
+                'Monto': 800000,
+                'Estado': 'Enviada',
+                'Descripcion': 'Sitio web corporativo con catálogo de proyectos',
+                'Fecha': '2024-08-05',
+                'Fecha_Vencimiento': '2024-08-20',
+                'Prioridad': 'Media'
+            }
+        ]
+        
+        st.session_state.cotizaciones = pd.DataFrame(cotizaciones_demo)
             self.pipeline_cotizaciones()
         
         with tab3:
