@@ -906,12 +906,27 @@ class CRMSimple:
         """Gestión de proyectos con sistema completo siempre disponible"""
         st.header("🚀 Gestión de Proyectos")
         
-        # Activar automáticamente el sistema completo
-        if not hasattr(st.session_state, 'desarrollar_proyectos'):
-            st.session_state.desarrollar_proyectos = True
-        
-        # Mostrar siempre el sistema completo
-        self.sistema_proyectos_completo()
+        try:
+            # Activar automáticamente el sistema completo
+            if not hasattr(st.session_state, 'desarrollar_proyectos'):
+                st.session_state.desarrollar_proyectos = True
+            
+            # Mostrar siempre el sistema completo
+            self.sistema_proyectos_completo()
+        except Exception as e:
+            st.error(f"Error en el sistema de proyectos: {str(e)}")
+            st.info("🔄 Recarga la página para intentar nuevamente")
+            
+            # Sistema básico como fallback
+            col1, col2, col3, col4 = st.columns(4)
+            with col1:
+                st.metric("🚀 Total Proyectos", len(st.session_state.proyectos))
+            with col2:
+                st.metric("⚡ En Desarrollo", len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'En Desarrollo']) if len(st.session_state.proyectos) > 0 else 0)
+            with col3:
+                st.metric("✅ Completados", len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'Completado']) if len(st.session_state.proyectos) > 0 else 0)
+            with col4:
+                st.metric("💰 Valor Total", f"${st.session_state.proyectos['Valor'].sum():,.0f}" if len(st.session_state.proyectos) > 0 else "$0")
     
     # ===================== MÓDULO SEO INTEGRADO =====================
     
