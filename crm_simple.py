@@ -188,17 +188,68 @@ class CRMSimple:
             })
         
         if 'proyectos' not in st.session_state:
-            st.session_state.proyectos = pd.DataFrame({
-                'ID': [],
-                'Cliente': [],
-                'Proyecto': [],
-                'Estado': [],
-                'Progreso': [],
-                'Fecha_Inicio': [],
-                'Fecha_Entrega': [],
-                'Valor': [],
-                'Responsable': []
-            })
+            # Crear proyectos de ejemplo con todas las funcionalidades
+            proyectos_ejemplo = [
+                {
+                    'ID': 'PRY001',
+                    'Cliente': 'Clínica Cumbres del Norte',
+                    'Proyecto': 'Portal Pacientes CCDN',
+                    'Descripcion': 'Portal web completo para gestión de pacientes con sistema de citas y expedientes digitales',
+                    'Estado': 'En Desarrollo',
+                    'Progreso': 60,
+                    'Fecha_Inicio': '2025-01-15',
+                    'Fecha_Entrega': '2025-04-30',
+                    'Valor': 2500000,
+                    'Responsable': 'Jorge Riquelme',
+                    'Tareas': [
+                        {'tarea': 'Análisis de requerimientos', 'completada': True, 'fecha_completada': '2025-01-20 14:30'},
+                        {'tarea': 'Diseño UI/UX', 'completada': True, 'fecha_completada': '2025-02-05 16:45'},
+                        {'tarea': 'Desarrollo backend', 'completada': False, 'fecha_completada': None},
+                        {'tarea': 'Desarrollo frontend', 'completada': False, 'fecha_completada': None},
+                        {'tarea': 'Testing y QA', 'completada': False, 'fecha_completada': None}
+                    ],
+                    'Fecha_Creacion': '2025-01-15 09:00',
+                    'Horas_Estimadas': 320,
+                    'Horas_Trabajadas': 165,
+                    'Timeline': [
+                        {'fecha': '2025-01-15 09:00', 'evento': '🆕 Proyecto creado', 'descripcion': 'Proyecto "Portal Pacientes CCDN" creado por Jorge Riquelme'},
+                        {'fecha': '2025-01-20 14:30', 'evento': '✅ Tarea completada', 'descripcion': 'Completada: Análisis de requerimientos'},
+                        {'fecha': '2025-02-05 16:45', 'evento': '✅ Tarea completada', 'descripcion': 'Completada: Diseño UI/UX'},
+                        {'fecha': '2025-02-10 10:15', 'evento': '⏰ Tiempo registrado: 8h', 'descripcion': 'Desarrollo de API REST para gestión de pacientes'}
+                    ],
+                    'Alertas': [],
+                    'Gastos': 450000
+                },
+                {
+                    'ID': 'PRY002',
+                    'Cliente': 'Dr. José Prieto',
+                    'Proyecto': 'SEO y Marketing Digital',
+                    'Descripcion': 'Optimización SEO completa y estrategia de marketing digital para aumentar pacientes',
+                    'Estado': 'Completado',
+                    'Progreso': 100,
+                    'Fecha_Inicio': '2024-11-01',
+                    'Fecha_Entrega': '2025-01-31',
+                    'Valor': 800000,
+                    'Responsable': 'Equipo Técnico',
+                    'Tareas': [
+                        {'tarea': 'Auditoría SEO inicial', 'completada': True, 'fecha_completada': '2024-11-05 11:20'},
+                        {'tarea': 'Keyword research', 'completada': True, 'fecha_completada': '2024-11-12 15:30'},
+                        {'tarea': 'Optimización on-page', 'completada': True, 'fecha_completada': '2024-12-20 14:15'},
+                        {'tarea': 'Campaña Google Ads', 'completada': True, 'fecha_completada': '2025-01-25 16:40'}
+                    ],
+                    'Fecha_Creacion': '2024-11-01 10:30',
+                    'Horas_Estimadas': 120,
+                    'Horas_Trabajadas': 115,
+                    'Timeline': [
+                        {'fecha': '2024-11-01 10:30', 'evento': '🆕 Proyecto creado', 'descripcion': 'Proyecto "SEO y Marketing Digital" creado por Equipo Técnico'},
+                        {'fecha': '2025-01-31 17:00', 'evento': '🎉 Proyecto completado', 'descripcion': 'Todas las tareas completadas - Proyecto finalizado'}
+                    ],
+                    'Alertas': [],
+                    'Gastos': 720000
+                }
+            ]
+            
+            st.session_state.proyectos = pd.DataFrame(proyectos_ejemplo)
     
     def init_seo_data(self):
         """Inicializar datos SEO"""
@@ -852,101 +903,15 @@ class CRMSimple:
                     st.rerun()
     
     def gestionar_proyectos(self):
-        """Gestión de proyectos"""
+        """Gestión de proyectos con sistema completo siempre disponible"""
         st.header("🚀 Gestión de Proyectos")
         
-        # Estado del módulo y opciones de desarrollo
-        if len(st.session_state.proyectos) == 0:
-            st.warning("""
-            ### 🚨 **MÓDULO CRÍTICO - NECESITA DESARROLLO URGENTE**
-            
-            **¿Qué podemos hacer aquí?**
-            - 🆕 **Crear nuevo proyecto** (formulario completo)
-            - ✏️ **Editar proyecto existente** (todos los campos)
-            - 🗑️ **Eliminar proyecto** (con confirmación)  
-            - 🔄 **Cambiar estado** (Planificación → En Desarrollo → Completado)
-            - 👤 **Asignar responsables** (miembros del equipo)
-            - 📊 **Actualizar progreso** (% completado)
-            - 📅 **Gestionar fechas** (inicio, entrega, hitos)
-            - 💰 **Seguimiento financiero** (presupuesto vs gastado)
-            - 📋 **Tareas y subtareas** (checklist detallado)
-            - 📈 **Dashboard de proyecto** (métricas individuales)
-            
-            **🎯 RECOMENDACIÓN:** Este es el módulo más importante para implementar CRUD completo
-            """)
-            
-            # Botón para iniciar desarrollo
-            if st.button("🛠️ **DESARROLLAR MÓDULO PROYECTOS COMPLETO**", type="primary", use_container_width=True):
-                st.success("✅ ¡Perfecto! Vamos a desarrollar el sistema completo de gestión de proyectos con todas las funcionalidades CRUD.")
-                st.info("📋 Incluirá: Crear, Editar, Eliminar, Estados, Responsables, Progreso, Fechas, Presupuestos y Dashboard individual.")
-                # Activar modo desarrollo
-                st.session_state.desarrollar_proyectos = True
-                st.rerun()
+        # Activar automáticamente el sistema completo
+        if not hasattr(st.session_state, 'desarrollar_proyectos'):
+            st.session_state.desarrollar_proyectos = True
         
-        # Modo desarrollo activado
-        if hasattr(st.session_state, 'desarrollar_proyectos') and st.session_state.desarrollar_proyectos:
-            self.sistema_proyectos_completo()
-        
-        # Métricas de proyectos
-        col1, col2, col3, col4 = st.columns(4)
-        
-        total_proyectos = len(st.session_state.proyectos)
-        proyectos_activos = len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'En Desarrollo']) if total_proyectos > 0 else 0
-        proyectos_completados = len(st.session_state.proyectos[st.session_state.proyectos['Estado'] == 'Completado']) if total_proyectos > 0 else 0
-        valor_total_pry = st.session_state.proyectos['Valor'].sum() if total_proyectos > 0 else 0
-        
-        with col1:
-            st.metric("🚀 Total Proyectos", total_proyectos)
-        with col2:
-            st.metric("⚡ En Desarrollo", proyectos_activos)
-        with col3:
-            st.metric("✅ Completados", proyectos_completados)
-        with col4:
-            st.metric("💰 Valor Total", f"${valor_total_pry:,.0f}")
-        
-        # Lista de proyectos
-        st.subheader("📋 Proyectos Activos")
-        
-        for idx, proyecto in st.session_state.proyectos.iterrows():
-            with st.container():
-                col1, col2, col3 = st.columns([3, 2, 1])
-                
-                with col1:
-                    estado_colors = {
-                        'Planificación': '🔵', 'En Desarrollo': '🟡', 
-                        'Completado': '🟢', 'Pausado': '🔴'
-                    }
-                    st.write(f"{estado_colors.get(proyecto['Estado'], '⚪')} **{proyecto['Proyecto']}**")
-                    st.write(f"👥 Cliente: {proyecto['Cliente']}")
-                    st.write(f"👨‍💻 Responsable: {proyecto['Responsable']}")
-                    
-                    # Barra de progreso
-                    st.progress(proyecto['Progreso'] / 100)
-                    st.write(f"Progreso: {proyecto['Progreso']}%")
-                
-                with col2:
-                    st.write(f"💰 **${proyecto['Valor']:,.0f}**")
-                    st.write(f"📅 Inicio: {proyecto['Fecha_Inicio']}")
-                    st.write(f"🎯 Entrega: {proyecto['Fecha_Entrega']}")
-                
-                with col3:
-                    if proyecto['Estado'] != 'Completado':
-                        nuevo_progreso = st.slider(
-                            "Actualizar %", 
-                            0, 100, 
-                            proyecto['Progreso'], 
-                            key=f"progreso_{idx}"
-                        )
-                        
-                        if st.button("💾 Actualizar", key=f"update_{idx}"):
-                            st.session_state.proyectos.loc[idx, 'Progreso'] = nuevo_progreso
-                            if nuevo_progreso == 100:
-                                st.session_state.proyectos.loc[idx, 'Estado'] = 'Completado'
-                            self.save_data('proyectos')  # Guardar proyectos
-                            st.success("✅ Proyecto actualizado y guardado!")
-                            st.rerun()
-                
-                st.divider()
+        # Mostrar siempre el sistema completo
+        self.sistema_proyectos_completo()
     
     # ===================== MÓDULO SEO INTEGRADO =====================
     
@@ -8988,10 +8953,11 @@ def main():
                     # Generar ID único
                     nuevo_id = f"PRY{len(st.session_state.proyectos) + 1:03d}"
                     
-                    # Procesar tareas
+                    # Procesar tareas con estado inicial
                     lista_tareas = [tarea.strip() for tarea in tareas.split('\n') if tarea.strip()]
+                    tareas_con_estado = [{'tarea': tarea, 'completada': False, 'fecha_completada': None} for tarea in lista_tareas]
                     
-                    # Crear proyecto
+                    # Crear proyecto con campos avanzados
                     nuevo_proyecto = {
                         'ID': nuevo_id,
                         'Cliente': cliente_proyecto,
@@ -9003,8 +8969,13 @@ def main():
                         'Fecha_Entrega': fecha_entrega.strftime('%Y-%m-%d'),
                         'Valor': valor_proyecto,
                         'Responsable': responsable,
-                        'Tareas': lista_tareas,
-                        'Fecha_Creacion': datetime.now().strftime('%Y-%m-%d %H:%M')
+                        'Tareas': tareas_con_estado,
+                        'Fecha_Creacion': datetime.now().strftime('%Y-%m-%d %H:%M'),
+                        'Horas_Estimadas': len(lista_tareas) * 8,  # 8 horas por tarea estimadas
+                        'Horas_Trabajadas': 0,
+                        'Timeline': [{'fecha': datetime.now().strftime('%Y-%m-%d %H:%M'), 'evento': '🆕 Proyecto creado', 'descripcion': f'Proyecto "{nombre_proyecto}" creado por {responsable}'}],
+                        'Alertas': [],
+                        'Gastos': 0
                     }
                     
                     # Agregar al DataFrame
@@ -9143,6 +9114,44 @@ def main():
                             if st.form_submit_button("❌ Cancelar", use_container_width=True):
                                 del st.session_state[f"editing_{proyecto['ID']}"]
                                 st.rerun()
+                
+                # Vista avanzada expandida
+                if not st.session_state.get(f"editing_{proyecto['ID']}", False):
+                    col_advanced, col_space = st.columns([1, 3])
+                    with col_advanced:
+                        if st.button("🚀 Vista Avanzada", key=f"advanced_{proyecto['ID']}", help="Checklist interactivo, timeline, control de tiempo"):
+                            st.session_state[f"advanced_view_{proyecto['ID']}"] = True
+                            st.rerun()
+                
+                if st.session_state.get(f"advanced_view_{proyecto['ID']}", False):
+                    st.markdown("---")
+                    st.subheader(f"🚀 **GESTIÓN AVANZADA: {proyecto['Proyecto']}**")
+                    
+                    # Tabs para funcionalidades avanzadas
+                    tab_checklist, tab_tiempo, tab_timeline, tab_alertas = st.tabs(["📋 Tareas", "⏰ Tiempo", "📈 Timeline", "🔔 Alertas"])
+                    
+                    with tab_checklist:
+                        tareas = proyecto.get('Tareas', [])
+                        progreso_calculado = self.mostrar_checklist_tareas(proyecto['ID'], tareas)
+                    
+                    with tab_tiempo:
+                        horas_est = proyecto.get('Horas_Estimadas', 0)
+                        horas_trab = proyecto.get('Horas_Trabajadas', 0)
+                        self.mostrar_control_tiempo(proyecto['ID'], horas_est, horas_trab)
+                    
+                    with tab_timeline:
+                        timeline = proyecto.get('Timeline', [])
+                        self.mostrar_timeline_proyecto(timeline)
+                    
+                    with tab_alertas:
+                        self.mostrar_alertas_proyecto(proyecto)
+                    
+                    # Botón para cerrar vista avanzada
+                    if st.button("❌ Cerrar Vista Avanzada", key=f"close_advanced_{proyecto['ID']}"):
+                        del st.session_state[f"advanced_view_{proyecto['ID']}"]
+                        st.rerun()
+                    
+                    st.markdown("---")
                 
                 st.markdown("---")
     
@@ -9702,6 +9711,210 @@ def main():
                     st.success("✅ Sistema cotizaciones reseteado")
                     st.rerun()
     
+    # NUEVAS FUNCIONES AVANZADAS PARA PROYECTOS
+    def agregar_timeline_entrada(self, proyecto_id, evento, descripcion):
+        """Agregar entrada al timeline del proyecto"""
+        entrada = {
+            'fecha': datetime.now().strftime('%Y-%m-%d %H:%M'),
+            'evento': evento,
+            'descripcion': descripcion
+        }
+        
+        # Encontrar el proyecto y agregar al timeline
+        idx = st.session_state.proyectos[st.session_state.proyectos['ID'] == proyecto_id].index
+        if len(idx) > 0:
+            timeline_actual = st.session_state.proyectos.loc[idx[0], 'Timeline']
+            if isinstance(timeline_actual, list):
+                timeline_actual.append(entrada)
+            else:
+                st.session_state.proyectos.loc[idx[0], 'Timeline'] = [entrada]
+            self.save_data('proyectos')
+    
+    def mostrar_checklist_tareas(self, proyecto_id, tareas):
+        """Mostrar checklist interactivo de tareas"""
+        st.subheader("📋 **CHECKLIST DE TAREAS INTERACTIVO**")
+        
+        if not isinstance(tareas, list) or len(tareas) == 0:
+            st.info("No hay tareas definidas para este proyecto")
+            return 0
+        
+        tareas_completadas = 0
+        total_tareas = len(tareas)
+        
+        # Si las tareas son strings simples, convertir a dict
+        if isinstance(tareas[0], str):
+            tareas = [{'tarea': t, 'completada': False, 'fecha_completada': None} for t in tareas]
+            # Actualizar en session_state
+            idx = st.session_state.proyectos[st.session_state.proyectos['ID'] == proyecto_id].index
+            if len(idx) > 0:
+                st.session_state.proyectos.loc[idx[0], 'Tareas'] = tareas
+        
+        for i, tarea_data in enumerate(tareas):
+            col1, col2 = st.columns([0.1, 0.9])
+            
+            with col1:
+                # Checkbox interactivo
+                completada = st.checkbox(
+                    "", 
+                    value=tarea_data.get('completada', False),
+                    key=f"tarea_{proyecto_id}_{i}"
+                )
+            
+            with col2:
+                if tarea_data.get('completada', False):
+                    st.markdown(f"~~✅ **{tarea_data['tarea']}**~~")
+                    if tarea_data.get('fecha_completada'):
+                        st.caption(f"📅 Completada: {tarea_data['fecha_completada']}")
+                    tareas_completadas += 1
+                else:
+                    st.write(f"⏳ **{tarea_data['tarea']}**")
+            
+            # Actualizar estado si cambió
+            if completada != tarea_data.get('completada', False):
+                tarea_data['completada'] = completada
+                if completada:
+                    tarea_data['fecha_completada'] = datetime.now().strftime('%Y-%m-%d %H:%M')
+                    self.agregar_timeline_entrada(proyecto_id, "✅ Tarea completada", f"Completada: {tarea_data['tarea']}")
+                else:
+                    tarea_data['fecha_completada'] = None
+                
+                # Actualizar progreso automáticamente
+                nuevo_progreso = int((tareas_completadas / total_tareas) * 100)
+                idx = st.session_state.proyectos[st.session_state.proyectos['ID'] == proyecto_id].index
+                if len(idx) > 0:
+                    st.session_state.proyectos.loc[idx[0], 'Tareas'] = tareas
+                    st.session_state.proyectos.loc[idx[0], 'Progreso'] = nuevo_progreso
+                    if nuevo_progreso == 100:
+                        st.session_state.proyectos.loc[idx[0], 'Estado'] = 'Completado'
+                        self.agregar_timeline_entrada(proyecto_id, "🎉 Proyecto completado", "Todas las tareas completadas - Proyecto finalizado")
+                    
+                    self.save_data('proyectos')
+                    st.rerun()
+        
+        # Mostrar progreso
+        progreso = (tareas_completadas / total_tareas) * 100 if total_tareas > 0 else 0
+        st.progress(progreso / 100)
+        st.write(f"📊 **Progreso: {tareas_completadas}/{total_tareas} tareas ({progreso:.0f}%)**")
+        
+        return progreso
+    
+    def mostrar_timeline_proyecto(self, timeline):
+        """Mostrar timeline de actividad del proyecto"""
+        st.subheader("📈 **TIMELINE DE ACTIVIDAD**")
+        
+        if not isinstance(timeline, list) or len(timeline) == 0:
+            st.info("No hay actividad registrada en este proyecto")
+            return
+        
+        # Ordenar por fecha (más reciente primero)
+        timeline_ordenado = sorted(timeline, key=lambda x: x['fecha'], reverse=True)
+        
+        for entrada in timeline_ordenado[:10]:  # Mostrar últimas 10 actividades
+            col1, col2 = st.columns([0.3, 0.7])
+            with col1:
+                st.caption(entrada['fecha'])
+            with col2:
+                st.write(f"{entrada['evento']}: {entrada['descripcion']}")
+        
+        if len(timeline_ordenado) > 10:
+            st.caption(f"... y {len(timeline_ordenado) - 10} actividades más")
+    
+    def mostrar_control_tiempo(self, proyecto_id, horas_estimadas, horas_trabajadas):
+        """Control de tiempo del proyecto"""
+        st.subheader("⏰ **CONTROL DE TIEMPO**")
+        
+        col1, col2, col3 = st.columns(3)
+        
+        with col1:
+            st.metric("🎯 Horas Estimadas", f"{horas_estimadas}h")
+        
+        with col2:
+            st.metric("⏱️ Horas Trabajadas", f"{horas_trabajadas}h", 
+                     f"{'+' if horas_trabajadas > horas_estimadas else ''}{horas_trabajadas - horas_estimadas}h")
+        
+        with col3:
+            eficiencia = (horas_estimadas / horas_trabajadas * 100) if horas_trabajadas > 0 else 100
+            color = "🟢" if eficiencia >= 90 else "🟡" if eficiencia >= 70 else "🔴"
+            st.metric(f"{color} Eficiencia", f"{eficiencia:.0f}%")
+        
+        # Agregar horas trabajadas
+        st.subheader("⏰ Registrar Tiempo")
+        with st.form(f"tiempo_{proyecto_id}"):
+            col1, col2 = st.columns(2)
+            with col1:
+                nuevas_horas = st.number_input("Horas trabajadas hoy", min_value=0.0, max_value=24.0, step=0.5)
+            with col2:
+                descripcion_tiempo = st.text_input("Descripción del trabajo realizado")
+            
+            if st.form_submit_button("⏰ Registrar Tiempo"):
+                if nuevas_horas > 0:
+                    # Actualizar horas
+                    idx = st.session_state.proyectos[st.session_state.proyectos['ID'] == proyecto_id].index
+                    if len(idx) > 0:
+                        st.session_state.proyectos.loc[idx[0], 'Horas_Trabajadas'] += nuevas_horas
+                        self.save_data('proyectos')
+                        
+                        # Agregar al timeline
+                        self.agregar_timeline_entrada(proyecto_id, f"⏰ Tiempo registrado: {nuevas_horas}h", 
+                                                    descripcion_tiempo or "Trabajo registrado")
+                        
+                        st.success(f"✅ {nuevas_horas} horas registradas")
+                        st.rerun()
+    
+    def mostrar_alertas_proyecto(self, proyecto_data):
+        """Sistema de alertas inteligentes"""
+        alertas = []
+        
+        # Alert: Cerca del deadline
+        fecha_entrega = pd.to_datetime(proyecto_data['Fecha_Entrega'])
+        dias_restantes = (fecha_entrega - pd.Timestamp.now()).days
+        
+        if dias_restantes <= 3 and proyecto_data['Estado'] != 'Completado':
+            alertas.append({
+                'tipo': '🚨 URGENTE',
+                'mensaje': f"Entrega en {dias_restantes} días ({proyecto_data['Fecha_Entrega']})",
+                'color': 'error'
+            })
+        elif dias_restantes <= 7 and proyecto_data['Estado'] != 'Completado':
+            alertas.append({
+                'tipo': '⚠️ ADVERTENCIA',
+                'mensaje': f"Entrega en {dias_restantes} días",
+                'color': 'warning'
+            })
+        
+        # Alert: Sin progreso reciente
+        timeline = proyecto_data.get('Timeline', [])
+        if isinstance(timeline, list) and len(timeline) > 0:
+            ultima_actividad = pd.to_datetime(timeline[-1]['fecha'])
+            dias_inactivo = (pd.Timestamp.now() - ultima_actividad).days
+            
+            if dias_inactivo >= 5:
+                alertas.append({
+                    'tipo': '😴 INACTIVIDAD',
+                    'mensaje': f"Sin actividad hace {dias_inactivo} días",
+                    'color': 'info'
+                })
+        
+        # Alert: Sobrepresupuesto
+        gastos = proyecto_data.get('Gastos', 0)
+        if gastos > proyecto_data['Valor'] * 0.8:
+            alertas.append({
+                'tipo': '💰 PRESUPUESTO',
+                'mensaje': f"Gastos: ${gastos:,.0f} de ${proyecto_data['Valor']:,.0f}",
+                'color': 'warning'
+            })
+        
+        # Mostrar alertas
+        if alertas:
+            st.subheader("🔔 **ALERTAS DEL PROYECTO**")
+            for alerta in alertas:
+                if alerta['color'] == 'error':
+                    st.error(f"{alerta['tipo']}: {alerta['mensaje']}")
+                elif alerta['color'] == 'warning':
+                    st.warning(f"{alerta['tipo']}: {alerta['mensaje']}")
+                else:
+                    st.info(f"{alerta['tipo']}: {alerta['mensaje']}")
+
     # Footer
     st.markdown("---")
     st.markdown("🏢 **IAM CRM** - Sistema estable desarrollado con Streamlit")
