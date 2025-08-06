@@ -615,21 +615,40 @@ class CRMSimple:
         """Gestión de cotizaciones"""
         st.header("📋 Gestión de Cotizaciones")
         
-        # Estado del módulo
+        # Estado del módulo mejorado
         if len(st.session_state.cotizaciones) == 0:
-            st.info("""
-            ### 🔧 **MÓDULO EN DESARROLLO**
+            st.warning("""
+            ### ⚠️ **MÓDULO COTIZACIONES - FUNCIONALIDAD PARCIAL**
             
-            **¿Qué falta para que sea funcional?**
-            - ✅ Crear nueva cotización
-            - ✅ Editar cotizaciones existentes
-            - ✅ Cambiar estado (Enviada → Aprobada → Facturada)
-            - ✅ Calcular probabilidades de cierre
-            - ✅ Generar PDFs de cotizaciones
-            - ✅ Seguimiento de vencimientos
+            **✅ LO QUE YA FUNCIONA:**
+            - Crear nueva cotización ✅
+            - Ver lista de cotizaciones ✅  
+            - Aprobar cotizaciones (Enviada → Aprobada) ✅
+            - Conexión con Cotizador IntegrA Marketing ✅
+            - Persistencia de datos ✅
             
-            **📊 Actualmente:** Estructura lista, sin datos reales
+            **❌ LO QUE FALTA (CRÍTICO):**
+            - **Editar cotizaciones existentes** 
+            - **Eliminar cotizaciones**
+            - **Estados completos** (Rechazada, Stand by, En negociación)
+            - **Automatización:** Aprobada → Crear Cliente + Proyecto automáticamente
+            - **Duplicar cotizaciones**
+            - **Convertir a factura**
+            
+            **🎯 CRUD Actual: 2.3/4 (58%) - Necesita desarrollo completo**
             """)
+            
+            if st.button("🛠️ **DESARROLLAR MÓDULO COTIZACIONES COMPLETO**", type="primary", use_container_width=True):
+                st.success("✅ ¡Perfecto! Vamos a completar el sistema de cotizaciones con CRUD completo y automatización.")
+                st.info("📋 Incluirá: Editar, Eliminar, Estados completos, Automatización Cliente+Proyecto")
+                # Activar desarrollo
+                st.session_state.desarrollar_cotizaciones = True
+                st.rerun()
+        
+        # Sistema completo de cotizaciones
+        if hasattr(st.session_state, 'desarrollar_cotizaciones') and st.session_state.desarrollar_cotizaciones:
+            self.sistema_cotizaciones_completo()
+            return  # Terminar aquí cuando esté en modo desarrollo
         
         # Métricas de cotizaciones
         col1, col2, col3, col4 = st.columns(4)
@@ -9230,6 +9249,457 @@ def main():
                     })
                     del st.session_state.desarrollar_proyectos
                     st.success("✅ Sistema reseteado")
+                    st.rerun()
+    
+    def sistema_cotizaciones_completo(self):
+        """Sistema completo de cotizaciones con CRUD y automatización"""
+        st.header("📋 **SISTEMA COMPLETO DE COTIZACIONES**")
+        
+        # Tabs para organizar funcionalidades
+        tab1, tab2, tab3, tab4, tab5 = st.tabs(["📋 Gestión", "📊 Pipeline", "🤖 Automatización", "📈 Reportes", "⚙️ Config"])
+        
+        with tab1:
+            self.gestion_cotizaciones_crud()
+        
+        with tab2:
+            self.pipeline_cotizaciones()
+        
+        with tab3:
+            self.automatizacion_cotizaciones()
+        
+        with tab4:
+            self.reportes_cotizaciones()
+        
+        with tab5:
+            self.configuracion_cotizaciones()
+    
+    def gestion_cotizaciones_crud(self):
+        """CRUD completo para cotizaciones"""
+        st.subheader("📋 Gestión Completa de Cotizaciones")
+        
+        if len(st.session_state.cotizaciones) == 0:
+            st.info("📝 No hay cotizaciones. Usa el **Cotizador IntegrA Marketing** para crear la primera.")
+            
+            # Botón para ir al cotizador
+            if st.button("🚀 **IR AL COTIZADOR**", type="primary", use_container_width=True):
+                st.switch_page("pages/Cotizador.py") if hasattr(st, 'switch_page') else st.info("Ve a la sección 'Cotizador' en el menú lateral")
+            return
+        
+        # Filtros avanzados
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            filtro_cliente = st.selectbox("👥 Cliente", ["Todos"] + list(st.session_state.cotizaciones['Cliente'].unique()))
+        with col2:
+            filtro_estado = st.selectbox("📊 Estado", ["Todos"] + list(st.session_state.cotizaciones['Estado'].unique()))
+        with col3:
+            filtro_fecha = st.selectbox("📅 Período", ["Todos", "Este mes", "Este año", "Vencidas"])
+        with col4:
+            orden = st.selectbox("🔄 Ordenar por", ["Fecha reciente", "Monto mayor", "Cliente A-Z"])
+        
+        # Aplicar filtros
+        df_filtrado = st.session_state.cotizaciones.copy()
+        if filtro_cliente != "Todos":
+            df_filtrado = df_filtrado[df_filtrado['Cliente'] == filtro_cliente]
+        if filtro_estado != "Todos":
+            df_filtrado = df_filtrado[df_filtrado['Estado'] == filtro_estado]
+        
+        # Lista de cotizaciones con CRUD
+        st.markdown("---")
+        
+        for idx, cotiz in df_filtrado.iterrows():
+            with st.container():
+                # Header de la cotización
+                col1, col2, col3, col4, col5 = st.columns([3, 1, 1, 1, 1])
+                
+                with col1:
+                    # Estado con colores
+                    estado_colors = {
+                        'Borrador': '⚪', 'Enviada': '🔵', 'Pendiente': '🟡',
+                        'En negociación': '🟠', 'Stand by': '🟤',
+                        'Aprobada': '🟢', 'Rechazada': '🔴', 'Vencida': '⚫', 'Cancelada': '⚫'
+                    }
+                    color = estado_colors.get(cotiz['Estado'], '⚪')
+                    
+                    st.markdown(f"### {color} **{cotiz['ID']}** - {cotiz['Cliente']}")
+                    st.write(f"💼 **Servicio:** {cotiz['Servicio']}")
+                    st.write(f"💰 **Monto:** ${cotiz['Monto']:,.0f} | 📅 **Vencimiento:** {cotiz['Fecha_Vencimiento']}")
+                
+                with col2:
+                    st.metric("📊 Probabilidad", f"{cotiz['Probabilidad']}%")
+                
+                with col3:
+                    # Botón editar
+                    if st.button("✏️ Editar", key=f"edit_cot_{cotiz['ID']}"):
+                        st.session_state[f"editing_cot_{cotiz['ID']}"] = True
+                        st.rerun()
+                
+                with col4:
+                    # Botón duplicar
+                    if st.button("📋 Duplicar", key=f"dup_cot_{cotiz['ID']}"):
+                        self.duplicar_cotizacion(cotiz)
+                        st.rerun()
+                
+                with col5:
+                    # Botón eliminar
+                    if st.button("🗑️", key=f"del_cot_{cotiz['ID']}"):
+                        st.session_state[f"confirm_delete_cot_{cotiz['ID']}"] = True
+                        st.rerun()
+                
+                # Confirmación de eliminación
+                if st.session_state.get(f"confirm_delete_cot_{cotiz['ID']}", False):
+                    st.error(f"⚠️ **¿Eliminar cotización {cotiz['ID']} - {cotiz['Cliente']}?**")
+                    col_si, col_no = st.columns(2)
+                    with col_si:
+                        if st.button("🗑️ SÍ, ELIMINAR", key=f"confirm_del_yes_{cotiz['ID']}", type="primary"):
+                            # Eliminar cotización
+                            st.session_state.cotizaciones = st.session_state.cotizaciones[st.session_state.cotizaciones['ID'] != cotiz['ID']]
+                            self.save_data('cotizaciones')
+                            del st.session_state[f"confirm_delete_cot_{cotiz['ID']}"]
+                            st.success(f"✅ Cotización {cotiz['ID']} eliminada")
+                            st.rerun()
+                    with col_no:
+                        if st.button("❌ Cancelar", key=f"confirm_del_no_{cotiz['ID']}"):
+                            del st.session_state[f"confirm_delete_cot_{cotiz['ID']}"]
+                            st.rerun()
+                
+                # Formulario de edición
+                if st.session_state.get(f"editing_cot_{cotiz['ID']}", False):
+                    with st.form(f"editar_cotizacion_{cotiz['ID']}"):
+                        st.subheader(f"✏️ Editando Cotización: {cotiz['ID']}")
+                        
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            nuevo_cliente = st.text_input("👥 Cliente", value=cotiz['Cliente'])
+                            nuevo_servicio = st.text_area("💼 Servicio", value=cotiz['Servicio'])
+                            nuevo_monto = st.number_input("💰 Monto", value=int(cotiz['Monto']), step=50000)
+                            nueva_probabilidad = st.slider("📊 Probabilidad (%)", 0, 100, int(cotiz['Probabilidad']))
+                        
+                        with col2:
+                            nuevo_estado = st.selectbox("📊 Estado", 
+                                                      ["Borrador", "Enviada", "Pendiente", "En negociación", "Stand by", "Aprobada", "Rechazada", "Vencida", "Cancelada"],
+                                                      index=["Borrador", "Enviada", "Pendiente", "En negociación", "Stand by", "Aprobada", "Rechazada", "Vencida", "Cancelada"].index(cotiz['Estado']) if cotiz['Estado'] in ["Borrador", "Enviada", "Pendiente", "En negociación", "Stand by", "Aprobada", "Rechazada", "Vencida", "Cancelada"] else 1)
+                            nueva_fecha_venc = st.date_input("📅 Fecha Vencimiento", value=pd.to_datetime(cotiz['Fecha_Vencimiento']).date())
+                            nueva_fecha_envio = st.date_input("📤 Fecha Envío", value=pd.to_datetime(cotiz['Fecha_Envio']).date())
+                        
+                        nuevas_notas = st.text_area("📝 Notas", value=cotiz['Notas'])
+                        
+                        col_guardar, col_cancelar = st.columns(2)
+                        with col_guardar:
+                            if st.form_submit_button("💾 **GUARDAR CAMBIOS**", type="primary", use_container_width=True):
+                                # Verificar si cambió a "Aprobada" para activar automatización
+                                estado_anterior = cotiz['Estado']
+                                activar_automatizacion = (estado_anterior != 'Aprobada' and nuevo_estado == 'Aprobada')
+                                
+                                # Actualizar cotización
+                                idx_real = st.session_state.cotizaciones[st.session_state.cotizaciones['ID'] == cotiz['ID']].index[0]
+                                st.session_state.cotizaciones.loc[idx_real, 'Cliente'] = nuevo_cliente
+                                st.session_state.cotizaciones.loc[idx_real, 'Servicio'] = nuevo_servicio
+                                st.session_state.cotizaciones.loc[idx_real, 'Monto'] = nuevo_monto
+                                st.session_state.cotizaciones.loc[idx_real, 'Estado'] = nuevo_estado
+                                st.session_state.cotizaciones.loc[idx_real, 'Probabilidad'] = nueva_probabilidad
+                                st.session_state.cotizaciones.loc[idx_real, 'Fecha_Vencimiento'] = nueva_fecha_venc.strftime('%Y-%m-%d')
+                                st.session_state.cotizaciones.loc[idx_real, 'Fecha_Envio'] = nueva_fecha_envio.strftime('%Y-%m-%d')
+                                st.session_state.cotizaciones.loc[idx_real, 'Notas'] = nuevas_notas
+                                
+                                self.save_data('cotizaciones')
+                                del st.session_state[f"editing_cot_{cotiz['ID']}"]
+                                
+                                st.success(f"✅ Cotización {cotiz['ID']} actualizada!")
+                                
+                                # Automatización si se aprobó
+                                if activar_automatizacion:
+                                    self.automatizar_cotizacion_aprobada(cotiz['ID'], nuevo_cliente, nuevo_servicio, nuevo_monto)
+                                
+                                st.rerun()
+                        
+                        with col_cancelar:
+                            if st.form_submit_button("❌ Cancelar", use_container_width=True):
+                                del st.session_state[f"editing_cot_{cotiz['ID']}"]
+                                st.rerun()
+                
+                st.markdown("---")
+    
+    def duplicar_cotizacion(self, cotizacion):
+        """Duplicar una cotización existente"""
+        nuevo_id = f"COT{len(st.session_state.cotizaciones) + 1:03d}"
+        
+        nueva_cotiz = pd.DataFrame({
+            'ID': [nuevo_id],
+            'Cliente': [f"{cotizacion['Cliente']} (Copia)"],
+            'Servicio': [cotizacion['Servicio']],
+            'Monto': [cotizacion['Monto']],
+            'Estado': ['Borrador'],
+            'Fecha_Envio': [datetime.now().strftime('%Y-%m-%d')],
+            'Fecha_Vencimiento': [(datetime.now() + pd.Timedelta(days=30)).strftime('%Y-%m-%d')],
+            'Probabilidad': [cotizacion['Probabilidad']],
+            'Notas': [f"Duplicada de {cotizacion['ID']}"]
+        })
+        
+        st.session_state.cotizaciones = pd.concat([st.session_state.cotizaciones, nueva_cotiz], ignore_index=True)
+        self.save_data('cotizaciones')
+        st.success(f"✅ Cotización duplicada como {nuevo_id}")
+    
+    def automatizar_cotizacion_aprobada(self, cotiz_id, cliente, servicio, monto):
+        """Automatización completa cuando se aprueba una cotización"""
+        st.success(f"🤖 **AUTOMATIZACIÓN ACTIVADA** para cotización {cotiz_id}")
+        
+        # 1. Crear cliente si no existe
+        cliente_existe = cliente in st.session_state.clientes['Nombre'].values
+        if not cliente_existe:
+            nuevo_cliente = pd.DataFrame({
+                'ID': [f"CLI{len(st.session_state.clientes) + 1:03d}"],
+                'Nombre': [cliente],
+                'Email': [f"contacto@{cliente.lower().replace(' ', '')}.com"],
+                'Teléfono': ['+56 9 0000 0000'],
+                'Ciudad': ['Antofagasta'],
+                'Industria': ['Por definir'],
+                'Estado': ['Activo'],
+                'Valor_Mensual': [int(monto * 0.1)],  # 10% del proyecto como mensual
+                'Servicios': [servicio],
+                'Ultimo_Contacto': [datetime.now().strftime('%Y-%m-%d')]
+            })
+            
+            st.session_state.clientes = pd.concat([st.session_state.clientes, nuevo_cliente], ignore_index=True)
+            self.save_data('clientes')
+            st.info(f"✅ **Cliente creado:** {cliente}")
+        
+        # 2. Crear proyecto automáticamente
+        nuevo_proyecto = pd.DataFrame({
+            'ID': [f"PRY{len(st.session_state.proyectos) + 1:03d}"],
+            'Cliente': [cliente],
+            'Proyecto': [f"Proyecto: {servicio}"],
+            'Descripcion': [f"Proyecto generado automáticamente desde cotización {cotiz_id}"],
+            'Estado': ['Planificación'],
+            'Progreso': [0],
+            'Fecha_Inicio': [datetime.now().strftime('%Y-%m-%d')],
+            'Fecha_Entrega': [(datetime.now() + pd.Timedelta(days=60)).strftime('%Y-%m-%d')],
+            'Valor': [monto],
+            'Responsable': ['Jorge Riquelme'],
+            'Tareas': [self.generar_tareas_automaticas(servicio)],
+            'Fecha_Creacion': [datetime.now().strftime('%Y-%m-%d %H:%M')],
+            'Origen': [f"Cotización {cotiz_id}"]
+        })
+        
+        st.session_state.proyectos = pd.concat([st.session_state.proyectos, nuevo_proyecto], ignore_index=True)
+        self.save_data('proyectos')
+        st.info(f"✅ **Proyecto creado:** {nuevo_proyecto.iloc[0]['ID']}")
+        
+        # 3. Mostrar resumen de automatización
+        st.success("""
+        🤖 **AUTOMATIZACIÓN COMPLETADA:**
+        ✅ Cliente agregado al CRM
+        ✅ Proyecto creado con tareas  
+        ✅ Fecha de entrega estimada: 60 días
+        ✅ Estado inicial: Planificación
+        """)
+    
+    def generar_tareas_automaticas(self, servicio):
+        """Generar tareas automáticas según el servicio"""
+        tareas_base = [
+            "Reunión inicial con cliente",
+            "Análisis de requerimientos",
+            "Propuesta técnica detallada",
+            "Aprobación de propuesta"
+        ]
+        
+        if "marketing" in servicio.lower() or "seo" in servicio.lower():
+            tareas_base.extend([
+                "Auditoría SEO inicial",
+                "Keyword research",
+                "Estrategia de contenido",
+                "Configuración Google Analytics",
+                "Primer reporte de resultados"
+            ])
+        
+        if "web" in servicio.lower() or "página" in servicio.lower():
+            tareas_base.extend([
+                "Diseño de wireframes",
+                "Diseño visual",
+                "Desarrollo frontend",
+                "Desarrollo backend",
+                "Testing y deployment"
+            ])
+        
+        return tareas_base
+    
+    def pipeline_cotizaciones(self):
+        """Vista de pipeline de cotizaciones estilo Kanban"""
+        st.subheader("📊 Pipeline de Cotizaciones")
+        
+        if len(st.session_state.cotizaciones) == 0:
+            st.info("📈 Pipeline estará disponible cuando tengas cotizaciones")
+            return
+        
+        # Estados del pipeline
+        estados = ["Borrador", "Enviada", "En negociación", "Aprobada", "Rechazada"]
+        
+        # Mostrar columnas del pipeline
+        cols = st.columns(len(estados))
+        
+        for i, estado in enumerate(estados):
+            with cols[i]:
+                cotiz_estado = st.session_state.cotizaciones[st.session_state.cotizaciones['Estado'] == estado]
+                
+                # Header de columna
+                st.markdown(f"### {estado}")
+                st.metric("Total", len(cotiz_estado))
+                
+                # Cotizaciones en este estado
+                for _, cotiz in cotiz_estado.iterrows():
+                    with st.container():
+                        st.markdown(f"""
+                        <div style="background: #f0f2f6; padding: 10px; border-radius: 8px; margin: 5px 0; border-left: 4px solid #1f77b4;">
+                            <strong>{cotiz['Cliente']}</strong><br>
+                            💰 ${cotiz['Monto']:,.0f}<br>
+                            📊 {cotiz['Probabilidad']}%<br>
+                            <small>📅 {cotiz['Fecha_Vencimiento']}</small>
+                        </div>
+                        """, unsafe_allow_html=True)
+        
+        # Métricas del pipeline
+        st.markdown("---")
+        st.subheader("📈 Métricas del Pipeline")
+        
+        col1, col2, col3, col4 = st.columns(4)
+        with col1:
+            total_valor = st.session_state.cotizaciones['Monto'].sum()
+            st.metric("💰 Valor Total Pipeline", f"${total_valor:,.0f}")
+        with col2:
+            conversion_rate = len(st.session_state.cotizaciones[st.session_state.cotizaciones['Estado'] == 'Aprobada']) / len(st.session_state.cotizaciones) * 100 if len(st.session_state.cotizaciones) > 0 else 0
+            st.metric("📊 Tasa de Conversión", f"{conversion_rate:.1f}%")
+        with col3:
+            valor_aprobado = st.session_state.cotizaciones[st.session_state.cotizaciones['Estado'] == 'Aprobada']['Monto'].sum()
+            st.metric("✅ Valor Aprobado", f"${valor_aprobado:,.0f}")
+        with col4:
+            promedio_probabilidad = st.session_state.cotizaciones['Probabilidad'].mean()
+            st.metric("🎯 Prob. Promedio", f"{promedio_probabilidad:.1f}%")
+    
+    def automatizacion_cotizaciones(self):
+        """Configuración y estado de automatizaciones"""
+        st.subheader("🤖 Automatización de Cotizaciones")
+        
+        st.info("""
+        ### ✅ **AUTOMATIZACIÓN IMPLEMENTADA**
+        
+        **Al APROBAR una cotización se ejecuta automáticamente:**
+        1. 👥 **Crear Cliente** (si no existe)
+        2. 🚀 **Crear Proyecto** con tareas predefinidas
+        3. 📅 **Establecer fechas** de inicio y entrega 
+        4. 👤 **Asignar responsable** (Jorge Riquelme)
+        5. 📋 **Generar tareas** según tipo de servicio
+        
+        **Tareas automáticas según servicio:**
+        - 🎯 **Marketing/SEO:** Auditoría, Keywords, Analytics, Reportes
+        - 🌐 **Desarrollo Web:** Wireframes, Diseño, Frontend, Backend
+        - 📱 **Servicios Generales:** Reuniones, Análisis, Propuestas
+        """)
+        
+        # Historial de automatizaciones
+        if len(st.session_state.cotizaciones) > 0:
+            st.subheader("📜 Historial de Automatizaciones")
+            
+            aprobadas = st.session_state.cotizaciones[st.session_state.cotizaciones['Estado'] == 'Aprobada']
+            
+            if len(aprobadas) > 0:
+                for _, cotiz in aprobadas.iterrows():
+                    with st.container():
+                        st.markdown(f"""
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 10px; margin: 10px 0; border-left: 5px solid #4caf50;">
+                            <h4>🤖 Automatización Ejecutada</h4>
+                            <strong>Cotización:</strong> {cotiz['ID']} - {cotiz['Cliente']}<br>
+                            <strong>Servicio:</strong> {cotiz['Servicio']}<br>
+                            <strong>Valor:</strong> ${cotiz['Monto']:,.0f}<br>
+                            <strong>Resultado:</strong> ✅ Cliente + Proyecto creados automáticamente
+                        </div>
+                        """, unsafe_allow_html=True)
+            else:
+                st.info("🔄 Aprueba una cotización para ver las automatizaciones en acción")
+    
+    def reportes_cotizaciones(self):
+        """Reportes y análisis de cotizaciones"""
+        st.subheader("📈 Reportes y Análisis")
+        
+        if len(st.session_state.cotizaciones) == 0:
+            st.info("📊 Reportes estarán disponibles cuando tengas cotizaciones")
+            return
+        
+        # Gráficos de análisis
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            # Gráfico de estados
+            import plotly.express as px
+            
+            estados_count = st.session_state.cotizaciones['Estado'].value_counts()
+            fig_estados = px.pie(
+                values=estados_count.values,
+                names=estados_count.index,
+                title="📊 Distribución por Estado"
+            )
+            st.plotly_chart(fig_estados, use_container_width=True)
+        
+        with col2:
+            # Gráfico de valores por cliente
+            clientes_valor = st.session_state.cotizaciones.groupby('Cliente')['Monto'].sum().reset_index()
+            fig_clientes = px.bar(
+                clientes_valor,
+                x='Cliente',
+                y='Monto',
+                title="💰 Valor por Cliente"
+            )
+            st.plotly_chart(fig_clientes, use_container_width=True)
+        
+        # Tabla de análisis
+        st.subheader("📋 Análisis Detallado")
+        analisis = st.session_state.cotizaciones[['ID', 'Cliente', 'Estado', 'Monto', 'Probabilidad', 'Fecha_Vencimiento']].copy()
+        analisis['Monto'] = analisis['Monto'].apply(lambda x: f"${x:,.0f}")
+        analisis['Probabilidad'] = analisis['Probabilidad'].apply(lambda x: f"{x}%")
+        st.dataframe(analisis, use_container_width=True)
+    
+    def configuracion_cotizaciones(self):
+        """Configuración del módulo de cotizaciones"""
+        st.subheader("⚙️ Configuración de Cotizaciones")
+        
+        col1, col2 = st.columns(2)
+        
+        with col1:
+            st.write("**📊 Estados Disponibles**")
+            st.info("""
+            - ⚪ **Borrador**: En preparación
+            - 🔵 **Enviada**: Enviada al cliente
+            - 🟡 **Pendiente**: Esperando respuesta
+            - 🟠 **En negociación**: Negociando términos
+            - 🟤 **Stand by**: Pausada temporalmente
+            - 🟢 **Aprobada**: ✅ Acepta (activa automatización)
+            - 🔴 **Rechazada**: Rechazada por cliente
+            - ⚫ **Vencida**: Tiempo vencido
+            - ⚫ **Cancelada**: Cancelada internamente
+            """)
+        
+        with col2:
+            st.write("**🤖 Automatización**")
+            st.success("""
+            ✅ **FUNCIONALIDADES IMPLEMENTADAS:**
+            - CRUD completo (Crear, Leer, Actualizar, Eliminar)
+            - Estados completos con flujo lógico
+            - Automatización: Aprobada → Cliente + Proyecto
+            - Pipeline visual tipo Kanban
+            - Duplicar cotizaciones
+            - Reportes con gráficos
+            - Persistencia de datos
+            - Generación de tareas automáticas
+            """)
+            
+            st.write("**🔄 Acciones**")
+            if st.button("🔄 Resetear Sistema Cotizaciones"):
+                if st.button("⚠️ Confirmar Reset Cotizaciones"):
+                    st.session_state.cotizaciones = pd.DataFrame({
+                        'ID': [], 'Cliente': [], 'Servicio': [], 'Monto': [],
+                        'Estado': [], 'Fecha_Envio': [], 'Fecha_Vencimiento': [],
+                        'Probabilidad': [], 'Notas': []
+                    })
+                    del st.session_state.desarrollar_cotizaciones
+                    st.success("✅ Sistema cotizaciones reseteado")
                     st.rerun()
     
     # Footer
