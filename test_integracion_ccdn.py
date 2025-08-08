@@ -5,6 +5,53 @@ Test de integración del sistema de cumpleaños CCDN con templates reales
 import json
 import os
 import sys
+import pytest
+
+
+@pytest.fixture
+def num_cumpleaneros():
+    return 5
+
+
+@pytest.fixture
+def config():
+    return {
+        "poster_config": {
+            "name": "test",
+            "dimensions": {"width": 1000, "height": 1000},
+            "status": "aprobado",
+        },
+        "responsive_grid": {
+            "1-2_cumpleañeros": {
+                "grid_columns": 1,
+                "max_width": "600px",
+                "comment": "una columna",
+            },
+            "3-6_cumpleañeros": {
+                "grid_columns": 2,
+                "max_width": "800px",
+                "comment": "dos columnas",
+            },
+            "7-12_cumpleañeros": {
+                "grid_columns": 2,
+                "max_width": "900px",
+                "comment": "dos columnas compactas",
+            },
+            "13-20_cumpleañeros": {
+                "grid_columns": 3,
+                "max_width": "1100px",
+                "comment": "tres columnas",
+            },
+        },
+        "color_scheme": {
+            "primary": "#0055A4",
+            "secondary": "#007ACC",
+            "accent": "#A4C639",
+            "orange": "#FF5F00",
+            "purple": "#800080",
+            "white": "#FFFFFF",
+        },
+    }
 
 def test_configuracion_aprobada():
     """Test de la configuración aprobada"""
