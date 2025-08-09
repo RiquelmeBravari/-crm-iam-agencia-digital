@@ -1,5 +1,23 @@
-streamlit
-pandas
-plotly
-requests
-openpyxl
+# Streamlit y dependencias principales
+streamlit>=1.29.0
+pandas>=2.0.0
+plotly>=5.15.0
+requests>=2.31.0
+
+# Análisis de datos y visualización
+numpy>=1.24.0
+openpyxl>=3.1.0
+
+# Web scraping y análisis de páginas
+beautifulsoup4>=4.12.0
+lxml>=4.9.0
+
+# Utilidades adicionales
+Pillow>=10.0.0
+python-dateutil>=2.8.0
+
+# Opcional: para funcionalidades avanzadas
+# google-auth>=2.15.0
+# google-auth-oauthlib>=0.4.6
+# google-auth-httplib2>=0.1.0
+# google-api-python-client>=2.70.0

@@ -3,6 +3,8 @@ headless = true
 port = 8501
 enableCORS = false
 enableXsrfProtection = false
+maxUploadSize = 200
+maxMessageSize = 200
 
 [theme]
 base = "light"
@@ -10,9 +12,31 @@ primaryColor = "#e91e63"
 backgroundColor = "#ffffff"
 secondaryBackgroundColor = "#f8f9fa"
 textColor = "#262730"
+font = "sans serif"
 
 [browser]
 gatherUsageStats = false
 
 [client]
 showErrorDetails = false
+toolbarMode = "minimal"
+
+[ui]
+hideTopBar = false
+hideSidebarNav = false
+
+[runner]
+magicEnabled = true
+installTracer = false
+fixMatplotlib = true
+postScriptGC = true
+fastReruns = true
+
+[logger]
+level = "INFO"
+enableRichTraceback = false
+
+[global]
+disableWatchdogWarning = true
+showWarningOnDirectExecution = true
+suppressDeprecationWarnings = true
