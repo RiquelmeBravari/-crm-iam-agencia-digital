@@ -2,11 +2,11 @@
 
 ## 🎯 RESUMEN GENERAL
 
-**Total facturado mensual: $3,100,000** (suma de todos los clientes)
-- Dr. José Prieto: $1,000,000
-- Histocell: $600,000  
-- Cefes Garage: $300,000
-- **Clínica Cumbres del Norte: $1,200,000** (contrato fijo)
+**Total facturado mensual: $xxxxxx** (suma de todos los clientes)
+- Dr. José 
+- Histocell: $xxx  
+- Cefes Garage: $xxxx
+- **Clínica Cumbres del Norte: $xxx0** 
 
 ---
 
