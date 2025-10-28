@@ -29,7 +29,7 @@ st.set_page_config(
 class CRMAgenciaCompleto:
     def __init__(self):
         # Configuración
-        self.sheet_id = "1WNDIcf817VDaXx98ITOwqgSu-6fh3dvxFoZgitYfpQY"
+        self.sheet_id = "xxxx"
         
         # Datos persistentes en session_state
         self.init_session_state()
@@ -127,7 +127,7 @@ class CRMAgenciaCompleto:
                         'Industria': 'Laboratorio Anatomía Patológica',
                         'Sitio_Web': 'histocell.cl',
                         'Servicios_Activos': 'Marketing Integral, Redes Sociales, Web, Diseños, Portal Pacientes, SEO',
-                        'Valor_Mensual': 600000,
+                        'Valor_Mensual': xxx,
                         'Estado': 'Activo'
                     },
                     'Dr. José Prieto': {
@@ -137,7 +137,7 @@ class CRMAgenciaCompleto:
                         'Industria': 'Centro Médico Integral',
                         'Sitio_Web': 'doctorjoseprieto.cl',
                         'Servicios_Activos': 'Marketing Integral, Gestión Administrativa Comercial, Centro Integral',
-                        'Valor_Mensual': 1000000,
+                        'Valor_Mensual': xxx,
                         'Estado': 'Activo'
                     },
                     'Cefes Garage': {
@@ -147,7 +147,7 @@ class CRMAgenciaCompleto:
                         'Industria': 'Taller Mecánico Automotriz',
                         'Sitio_Web': 'cefesgarage.cl',
                         'Servicios_Activos': 'Proyecto Sitio Web, SEO Local, Google My Business',
-                        'Valor_Mensual': 300000,
+                        'Valor_Mensual': xxx,
                         'Estado': 'Activo'
                     }
                 }
