@@ -45,13 +45,13 @@ git push -u origin main
 2. **Secrets a configurar:**
 ```toml
 [api_keys]
-openrouter_api_key = "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"
+openrouter_api_key = "API aqui"
 
 [google_sheets]
-sheet_id = "1WNDIcf817VDaXx98ITOwqgSu-6fh3dvxFoZgitYfpQY"
+sheet_id = "xxxxxxxxxxxxxxxxx"
 
 [app_config]
-admin_password = "iam2025"
+admin_password = "xxxxxx"
 app_name = "CRM IAM Agencia Digital"
 ```
 
