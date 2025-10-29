@@ -55,9 +55,28 @@ class CotizacionesManager:
         col1, col2, col3, col4 = st.columns(4)
         
         total_rechazadas = len(self.cotizaciones_rechazadas)
-        valor_total_perdido = sum([cot['valor_propuesto'] for cot in self.cotizaciones_rechazadas.values()])
-        oportunidad_promedio = sum([cot['oportunidad_reconversion'] for cot in self.cotizaciones_rechazadas.values()]) / total_rechazadas
-        valor_potencial_recuperacion = sum([int(cot['propuesta_alternativa'].split('$')[1].split(',')[0].replace('.', '')) for cot in self.cotizaciones_rechazadas.values() if '$' in cot['propuesta_alternativa']])
+        valor_total_perdido = sum(
+            [cot['valor_propuesto'] for cot in self.cotizaciones_rechazadas.values()]
+        )
+        if total_rechazadas:
+            oportunidad_promedio = (
+                sum(
+                    [
+                        cot['oportunidad_reconversion']
+                        for cot in self.cotizaciones_rechazadas.values()
+                    ]
+                )
+                / total_rechazadas
+            )
+        else:
+            oportunidad_promedio = 0
+        valor_potencial_recuperacion = sum(
+            [
+                int(cot['propuesta_alternativa'].split('$')[1].split(',')[0].replace('.', ''))
+                for cot in self.cotizaciones_rechazadas.values()
+                if '$' in cot['propuesta_alternativa']
+            ]
+        )
         
         with col1:
             st.metric("❌ Total Rechazadas", total_rechazadas)
